@@ -1,0 +1,2751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfileScan - Universal Social Media Profile Viewer</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
+    <style>
+        :root {
+            /* Base Theme (Google Inspired - Default) */
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --accent-color: #ea4335;
+            --warning-color: #fbbc05;
+            --background-color: #ffffff;
+            --surface-color: #f8f9fa;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --card-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+            --hover-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+            --font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            --border-radius: 8px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Premium Theme 1: Dark Mode */
+        .theme-dark {
+            --primary-color: #8ab4f8;
+            --secondary-color: #81c995;
+            --accent-color: #f28b82;
+            --warning-color: #fdd663;
+            --background-color: #202124;
+            --surface-color: #292a2d;
+            --text-primary: #e8eaed;
+            --text-secondary: #9aa0a6;
+            --border-color: #3c4043;
+            --card-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.6), 0 1px 3px 1px rgba(0, 0, 0, 0.3);
+            --hover-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Premium Theme 2: Material Ocean */
+        .theme-ocean {
+            --primary-color: #80cbc4;
+            --secondary-color: #82b1ff;
+            --accent-color: #ff5252;
+            --warning-color: #ffd740;
+            --background-color: #263238;
+            --surface-color: #37474f;
+            --text-primary: #eceff1;
+            --text-secondary: #b0bec5;
+            --border-color: #455a64;
+        }
+
+        /* Premium Theme 3: Sunset */
+        .theme-sunset {
+            --primary-color: #ff7043;
+            --secondary-color: #ffab40;
+            --accent-color: #7e57c2;
+            --warning-color: #ffca28;
+            --background-color: #fff8e1;
+            --surface-color: #ffecb3;
+            --text-primary: #5d4037;
+            --text-secondary: #8d6e63;
+            --border-color: #ffcc80;
+        }
+
+        /* Premium Theme 4: Forest */
+        .theme-forest {
+            --primary-color: #4caf50;
+            --secondary-color: #8bc34a;
+            --accent-color: #ff9800;
+            --warning-color: #ffeb3b;
+            --background-color: #e8f5e9;
+            --surface-color: #c8e6c9;
+            --text-primary: #1b5e20;
+            --text-secondary: #388e3c;
+            --border-color: #a5d6a7;
+        }
+
+        /* Premium Theme 5: Midnight Purple */
+        .theme-midnight {
+            --primary-color: #bb86fc;
+            --secondary-color: #03dac6;
+            --accent-color: #cf6679;
+            --warning-color: #ffb74d;
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-primary: #e1e1e1;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+        }
+
+        /* Premium Theme 6: Minimal White */
+        .theme-minimal {
+            --primary-color: #5f6368;
+            --secondary-color: #80868b;
+            --accent-color: #d93025;
+            --warning-color: #f29900;
+            --background-color: #ffffff;
+            --surface-color: #ffffff;
+            --text-primary: #3c4043;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --card-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Premium Theme 7: Cyberpunk */
+        .theme-cyber {
+            --primary-color: #00ff9d;
+            --secondary-color: #00b8ff;
+            --accent-color: #ff0055;
+            --warning-color: #ffaa00;
+            --background-color: #0a0a0a;
+            --surface-color: #151515;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-color: #333333;
+            --card-shadow: 0 0 15px rgba(0, 255, 157, 0.1);
+            --hover-shadow: 0 0 25px rgba(0, 255, 157, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* Main Search Box */
+        .search-section {
+            padding: 40px 0;
+            background: linear-gradient(to right,
+                    color-mix(in srgb, var(--primary-color) 5%, transparent),
+                    color-mix(in srgb, var(--secondary-color) 5%, transparent));
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .search-title {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .search-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 24px;
+            padding-left: 56px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 1px 6px rgba(66, 133, 244, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 20px;
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: color-mix(in srgb, var(--primary-color) 80%, black);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: color-mix(in srgb, var(--surface-color) 90%, black);
+            border-color: var(--primary-color);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background-color: color-mix(in srgb, var(--accent-color) 80%, black);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--text-primary);
+        }
+
+        .btn-warning:hover {
+            background-color: color-mix(in srgb, var(--warning-color) 80%, black);
+        }
+
+        /* Platform Selection */
+        .platform-section {
+            padding: 40px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .platform-search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .platform-search {
+            width: 100%;
+            padding: 12px 16px;
+            padding-left: 44px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .platform-search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .category-tab:hover,
+        .category-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 16px;
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .platform-card {
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .platform-card:hover {
+            box-shadow: var(--hover-shadow);
+            border-color: var(--primary-color);
+        }
+
+        .platform-card.selected {
+            border-color: var(--primary-color);
+            background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
+        }
+
+        .platform-checkbox {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--surface-color);
+            cursor: pointer;
+        }
+
+        .platform-checkbox.checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .platform-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .platform-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+        }
+
+        .platform-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .platform-category {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background-color: var(--surface-color);
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .quick-select-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* Results Dashboard */
+        .results-section {
+            padding: 40px 0;
+            display: none;
+        }
+
+        .results-header {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .results-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background-color: var(--background-color);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .results-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .results-tab {
+            padding: 12px 24px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .results-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .result-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .result-card.found {
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .result-card.not-found {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .result-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-found {
+            background-color: color-mix(in srgb, var(--secondary-color) 20%, transparent);
+            color: var(--secondary-color);
+        }
+
+        .status-not-found {
+            background-color: color-mix(in srgb, var(--accent-color) 20%, transparent);
+            color: var(--accent-color);
+        }
+
+        .result-platform {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .result-platform-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--background-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .result-url {
+            display: block;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 16px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .result-url:hover {
+            text-decoration: underline;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: var(--surface-color);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .settings-panel.active {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .settings-section {
+            margin-bottom: 32px;
+        }
+
+        .settings-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .theme-option {
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-option:hover,
+        .theme-option.active {
+            border-color: var(--primary-color);
+            background-color: color-mix(in srgb, var(--primary-color) 5%, transparent);
+        }
+
+        .theme-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .theme-name {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-label {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--hover-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Legal Modal (Blocking) */
+        .legal-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            /* Darker opacity for blocking */
+            z-index: 2000;
+            /* Highest z-index */
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .legal-content {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .legal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .legal-text {
+            text-align: left;
+            margin: 24px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            background-color: var(--surface-color);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .visible {
+            display: block !important;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .error {
+            background-color: color-mix(in srgb, var(--accent-color) 10%, transparent);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin: 16px 0;
+        }
+
+        .success {
+            background-color: color-mix(in srgb, var(--secondary-color) 10%, transparent);
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin: 16px 0;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 32px 0;
+            margin-top: 64px;
+        }
+
+        .footer-content {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .footer-credits {
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .heart {
+            color: var(--accent-color);
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .search-title {
+                font-size: 24px;
+            }
+
+            .platform-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .theme-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-select-actions {
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-actions {
+                flex-direction: column;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .platform-search-box {
+                max-width: 100%;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body class="theme-default">
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">🔍</span>
+                <span>ProfileScan</span>
+            </div>
+            <div class="header-controls">
+                <button class="btn btn-secondary" id="quickSearchBtn">
+                    <span>🔎</span> Quick Search
+                </button>
+                <button class="btn btn-secondary" id="compareBtn">
+                    <span>⚖️</span> Compare
+                </button>
+                <button class="btn btn-secondary" id="settingsBtn">
+                    <span>⚙️</span> Settings
+                </button>
+                <button class="btn btn-primary" id="exportBtn">
+                    <span>📤</span> Export
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Search Section -->
+    <section class="search-section">
+        <div class="container search-container">
+            <h1 class="search-title">Universal Social Media Profile Viewer</h1>
+            <p class="search-subtitle">Enter a username to search across 200+ social media platforms instantly</p>
+
+            <div class="search-box">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="search-input" id="usernameInput"
+                    placeholder="Enter username (e.g., john_doe) or profile URL" autocomplete="off">
+            </div>
+
+            <div class="search-actions">
+                <button class="btn btn-primary" id="searchBtn">
+                    <span>🔍</span> Search All Platforms
+                </button>
+                <button class="btn btn-secondary" id="selectPlatformsBtn">
+                    <span>📋</span> Select Platforms
+                </button>
+                <button class="btn btn-secondary" id="loadExampleBtn">
+                    <span>📖</span> Load Example
+                </button>
+                <button class="btn btn-warning" id="clearAllBtn">
+                    <span>🗑️</span> Clear All
+                </button>
+            </div>
+
+            <div id="searchProgress" class="hidden">
+                <div style="margin: 20px 0; color: var(--text-secondary);">
+                    <div>Searching across <span id="platformCount">0</span> platforms...</div>
+                    <div
+                        style="width: 100%; background-color: var(--surface-color); height: 4px; border-radius: 2px; margin-top: 8px;">
+                        <div id="progressBar"
+                            style="width: 0%; height: 100%; background-color: var(--primary-color); border-radius: 2px; transition: width 0.3s ease;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Selection Section -->
+    <section class="platform-section" id="platformSection">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Select Platforms to Search</h2>
+                <div class="platform-search-box">
+                    <div class="platform-search-icon">🔎</div>
+                    <input type="text" class="platform-search" id="platformSearch"
+                        placeholder="Search platforms (e.g., Twitter, GitHub, Instagram)">
+                </div>
+            </div>
+
+            <div class="category-tabs" id="categoryTabs">
+                <!-- Categories will be populated by JavaScript -->
+            </div>
+
+            <div class="quick-select-actions">
+                <button class="btn btn-secondary" id="selectAllBtn">
+                    <span>✓</span> Select All (200+)
+                </button>
+                <button class="btn btn-secondary" id="selectTop50Btn">
+                    <span>🏆</span> Top 50 Popular
+                </button>
+                <button class="btn btn-secondary" id="selectByCategoryBtn">
+                    <span>📂</span> By Category
+                </button>
+                <button class="btn btn-secondary" id="deselectAllBtn">
+                    <span>✗</span> Deselect All
+                </button>
+                <button class="btn btn-primary" id="saveSelectionBtn">
+                    <span>💾</span> Save Selection
+                </button>
+            </div>
+
+            <div class="platform-grid" id="platformGrid">
+                <!-- Platforms will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection">
+        <div class="container">
+            <div class="results-header">
+                <h2>Results for: <span id="searchedUsername" style="color: var(--primary-color);">username</span></h2>
+                <p>Platforms searched: <span id="searchedCount">0</span> | Found: <span id="foundCount"
+                        style="color: var(--secondary-color);">0</span> | Not Found: <span id="notFoundCount"
+                        style="color: var(--accent-color);">0</span></p>
+
+                <div
+                    style="background-color: color-mix(in srgb, var(--warning-color) 10%, transparent); border: 1px solid var(--warning-color); padding: 12px; border-radius: var(--border-radius); margin-top: 16px; font-size: 14px; color: var(--text-secondary);">
+                    <strong>⚠️ Important Note:</strong> Results may not be 100% accurate due to platform protections or
+                    caching. Please manually verify important profiles by visiting the links.
+                </div>
+
+                <div class="results-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="presenceScore">0%</div>
+                        <div class="stat-label">Digital Presence Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="platformDiversity">Low</div>
+                        <div class="stat-label">Platform Diversity</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="searchTime">0s</div>
+                        <div class="stat-label">Search Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="consistencyScore">0%</div>
+                        <div class="stat-label">Username Consistency</div>
+                    </div>
+                </div>
+
+                <div class="search-actions" style="margin-top: 24px;">
+                    <button class="btn btn-primary" id="openAllFoundBtn">
+                        <span>🌐</span> Open All Found Profiles
+                    </button>
+                    <button class="btn btn-secondary" id="copyAllLinksBtn">
+                        <span>📋</span> Copy All Links
+                    </button>
+                    <button class="btn btn-accent" id="newSearchBtn">
+                        <span>🔄</span> New Search
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-tabs" id="resultsTabs">
+                <!-- Result tabs will be populated by JavaScript -->
+            </div>
+
+            <div class="results-grid" id="resultsGrid">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h2 class="section-title">Settings</h2>
+            <button class="close-btn" id="closeSettingsBtn">×</button>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-title">Appearance</h3>
+            <div class="theme-grid" id="themeGrid">
+                <!-- Themes will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-title">Preferences</h3>
+            <div class="settings-row">
+                <span class="setting-label">Dark Mode</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <span class="setting-label">Auto-Search on Enter</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoSearchToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <span class="setting-label">Show Platform Icons</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="showIconsToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <span class="setting-label">Privacy Mode</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="privacyModeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-title">Backup & Restore</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="btn btn-secondary" id="backupDataBtn">
+                    <span>💾</span> Backup All Data
+                </button>
+                <button class="btn btn-secondary" id="restoreDataBtn">
+                    <span>📥</span> Restore from Backup
+                </button>
+                <button class="btn btn-accent" id="resetDataBtn">
+                    <span>🔄</span> Reset All Data
+                </button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-title">About</h3>
+            <div style="color: var(--text-secondary); font-size: 14px;">
+                <p><strong>ProfileScan v1.0.0</strong></p>
+                <p>Universal Social Media Profile Viewer</p>
+                <p>200+ platforms supported</p>
+                <p>No backend • No tracking • Privacy focused</p>
+                <p style="margin-top: 16px;">
+                    Made with <span class="heart">❤️</span> by
+                    <a href="https://github.com/Aliriyaj007" target="_blank"
+                        style="color: var(--primary-color); text-decoration: none;">
+                        Aliriyaj007
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Export Results</h3>
+                <button class="close-btn" id="closeExportModalBtn">×</button>
+            </div>
+            <div style="margin: 24px 0;">
+                <p style="margin-bottom: 16px; color: var(--text-secondary);">Select export format:</p>
+                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <button class="btn btn-secondary" id="exportJsonBtn">JSON</button>
+                    <button class="btn btn-secondary" id="exportCsvBtn">CSV</button>
+                    <button class="btn btn-secondary" id="exportHtmlBtn">HTML Report</button>
+                </div>
+                <textarea id="exportData"
+                    style="width: 100%; height: 200px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius); background-color: var(--surface-color); color: var(--text-primary); font-family: monospace; font-size: 12px; resize: vertical;"
+                    readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="compareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Compare Usernames</h3>
+                <button class="close-btn" id="closeCompareModalBtn">×</button>
+            </div>
+            <div style="margin: 24px 0;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Username
+                            1</label>
+                        <input type="text" class="search-input" id="compareUsername1" placeholder="First username"
+                            style="width: 100%; padding: 12px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Username
+                            2</label>
+                        <input type="text" class="search-input" id="compareUsername2" placeholder="Second username"
+                            style="width: 100%; padding: 12px;">
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="startCompareBtn" style="margin-top: 24px; width: 100%;">
+                    <span>⚖️</span> Compare Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="guideModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">User Guide</h3>
+                <button class="close-btn" id="closeGuideModalBtn">×</button>
+            </div>
+            <div style="margin: 24px 0; color: var(--text-secondary);">
+                <h4 style="color: var(--text-primary); margin-bottom: 12px;">How to Use ProfileScan</h4>
+                <ol style="margin-left: 20px; margin-bottom: 20px;">
+                    <li>Enter a username in the search box (e.g., "john_doe")</li>
+                    <li>Select which platforms to search (or use "Select All")</li>
+                    <li>Click "Search All Platforms" to begin</li>
+                    <li>View results organized by category</li>
+                    <li>Click on any profile link to visit</li>
+                </ol>
+
+                <h4 style="color: var(--text-primary); margin-bottom: 12px;">Features</h4>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>200+ Platforms:</strong> Search across all major social networks</li>
+                    <li><strong>No Backend:</strong> Everything runs in your browser</li>
+                    <li><strong>Privacy Focused:</strong> No data sent to servers</li>
+                    <li><strong>Export Options:</strong> Save results as JSON, CSV, or HTML</li>
+                    <li><strong>Custom Themes:</strong> 7 premium themes included</li>
+                    <li><strong>Backup/Restore:</strong> Save your settings and selections</li>
+                </ul>
+
+                <div
+                    style="background-color: var(--surface-color); padding: 16px; border-radius: var(--border-radius); margin-top: 24px;">
+                    <p style="text-align: center; color: var(--primary-color);">
+                        Made with <span class="heart">❤️</span> by
+                        <a href="https://github.com/Aliriyaj007" target="_blank"
+                            style="color: var(--primary-color); text-decoration: none; font-weight: 500;">
+                            Aliriyaj007
+                        </a>
+                    </p>
+                    <p style="text-align: center; font-size: 12px; margin-top: 8px;">
+                        GitHub: github.com/Aliriyaj007
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>ProfileScan - Universal Social Media Profile Viewer</p>
+            <div class="footer-credits">
+                <p>Made with <span class="heart">❤️</span> by
+                    <a href="https://github.com/Aliriyaj007" target="_blank"
+                        style="color: var(--primary-color); text-decoration: none;">
+                        Aliriyaj007
+                    </a>
+                </p>
+                <p style="margin-top: 8px; font-size: 12px;">
+                    No backend • No tracking • Privacy focused • 200+ platforms supported
+                </p>
+                <button class="btn btn-secondary" id="showGuideBtn" style="margin-top: 16px; padding: 8px 16px;">
+                    <span>📖</span> View User Guide
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Main Application State
+        const AppState = {
+            username: '',
+            selectedPlatforms: new Set(),
+            searchResults: [],
+            platformData: [],
+            categories: new Set(),
+            currentTheme: 'default',
+            settings: {
+                darkMode: false,
+                autoSearch: true,
+                showIcons: true,
+                privacyMode: false,
+                defaultPlatforms: ['twitter', 'github', 'linkedin', 'instagram', 'facebook', 'youtube', 'reddit']
+            }
+        };
+
+        // Platform Database (200+ platforms)
+        const PLATFORM_DATABASE = [
+            // Mainstream/Meta Platforms
+            { id: 'facebook', name: 'Facebook', category: 'Mainstream', url: 'https://facebook.com/{username}', popularity: 95, region: 'global' },
+            { id: 'instagram', name: 'Instagram', category: 'Mainstream', url: 'https://instagram.com/{username}', popularity: 94, region: 'global' },
+            { id: 'twitter', name: 'Twitter / X', category: 'Mainstream', url: 'https://twitter.com/{username}', popularity: 90, region: 'global' },
+            { id: 'tiktok', name: 'TikTok', category: 'Mainstream', url: 'https://tiktok.com/@{username}', popularity: 92, region: 'global' },
+            { id: 'threads', name: 'Threads', category: 'Mainstream', url: 'https://threads.net/@{username}', popularity: 85, region: 'global' },
+            { id: 'youtube', name: 'YouTube', category: 'Mainstream', url: 'https://youtube.com/@{username}', popularity: 96, region: 'global' },
+
+            // Professional Networks
+            { id: 'linkedin', name: 'LinkedIn', category: 'Professional', url: 'https://linkedin.com/in/{username}', popularity: 88, region: 'global' },
+            { id: 'github', name: 'GitHub', category: 'Professional', url: 'https://github.com/{username}', popularity: 89, region: 'global' },
+            { id: 'gitlab', name: 'GitLab', category: 'Professional', url: 'https://gitlab.com/{username}', popularity: 75, region: 'global' },
+            { id: 'behance', name: 'Behance', category: 'Professional', url: 'https://behance.net/{username}', popularity: 70, region: 'global' },
+            { id: 'dribbble', name: 'Dribbble', category: 'Professional', url: 'https://dribbble.com/{username}', popularity: 72, region: 'global' },
+            { id: 'stackoverflow', name: 'Stack Overflow', category: 'Professional', url: 'https://stackoverflow.com/users/{username}', popularity: 80, region: 'global' },
+
+            // Media Sharing
+            { id: 'pinterest', name: 'Pinterest', category: 'Media', url: 'https://pinterest.com/{username}', popularity: 82, region: 'global' },
+            { id: 'flickr', name: 'Flickr', category: 'Media', url: 'https://flickr.com/people/{username}', popularity: 65, region: 'global' },
+            { id: 'vimeo', name: 'Vimeo', category: 'Media', url: 'https://vimeo.com/{username}', popularity: 68, region: 'global' },
+            { id: 'twitch', name: 'Twitch', category: 'Media', url: 'https://twitch.tv/{username}', popularity: 85, region: 'global' },
+            { id: 'kick', name: 'Kick', category: 'Media', url: 'https://kick.com/{username}', popularity: 60, region: 'global' },
+            { id: 'imgur', name: 'Imgur', category: 'Media', url: 'https://imgur.com/user/{username}', popularity: 75, region: 'global' },
+
+            // Discussion Forums
+            { id: 'reddit', name: 'Reddit', category: 'Forums', url: 'https://reddit.com/user/{username}', popularity: 87, region: 'global' },
+            { id: 'quora', name: 'Quora', category: 'Forums', url: 'https://quora.com/profile/{username}', popularity: 78, region: 'global' },
+            { id: 'discord', name: 'Discord', category: 'Forums', url: 'https://discord.com/users/{username}', popularity: 90, region: 'global' },
+
+            // Blogging
+            { id: 'medium', name: 'Medium', category: 'Blogging', url: 'https://medium.com/@{username}', popularity: 77, region: 'global' },
+            { id: 'tumblr', name: 'Tumblr', category: 'Blogging', url: 'https://{username}.tumblr.com', popularity: 70, region: 'global' },
+            { id: 'wordpress', name: 'WordPress', category: 'Blogging', url: 'https://{username}.wordpress.com', popularity: 75, region: 'global' },
+            { id: 'blogger', name: 'Blogger', category: 'Blogging', url: 'https://{username}.blogspot.com', popularity: 65, region: 'global' },
+
+            // Regional Platforms
+            { id: 'vk', name: 'VKontakte', category: 'Regional', url: 'https://vk.com/{username}', popularity: 85, region: 'russia' },
+            { id: 'ok', name: 'Odnoklassniki', category: 'Regional', url: 'https://ok.ru/{username}', popularity: 80, region: 'russia' },
+            { id: 'weibo', name: 'Weibo', category: 'Regional', url: 'https://weibo.com/{username}', popularity: 88, region: 'china' },
+            { id: 'bilibili', name: 'Bilibili', category: 'Regional', url: 'https://space.bilibili.com/{username}', popularity: 82, region: 'china' },
+
+            // Niche Platforms
+            { id: 'patreon', name: 'Patreon', category: 'Niche', url: 'https://patreon.com/{username}', popularity: 73, region: 'global' },
+            { id: 'onlyfans', name: 'OnlyFans', category: 'Niche', url: 'https://onlyfans.com/{username}', popularity: 76, region: 'global' },
+            { id: 'fiverr', name: 'Fiverr', category: 'Niche', url: 'https://fiverr.com/{username}', popularity: 71, region: 'global' },
+            { id: 'upwork', name: 'Upwork', category: 'Niche', url: 'https://upwork.com/freelancers/{username}', popularity: 69, region: 'global' },
+
+            // Additional platforms (150+ more would be added here)
+            { id: 'snapchat', name: 'Snapchat', category: 'Mainstream', url: 'https://snapchat.com/add/{username}', popularity: 86, region: 'global' },
+            { id: 'telegram', name: 'Telegram', category: 'Messaging', url: 'https://t.me/{username}', popularity: 84, region: 'global' },
+            { id: 'whatsapp', name: 'WhatsApp', category: 'Messaging', url: 'https://wa.me/{username}', popularity: 95, region: 'global' },
+            { id: 'signal', name: 'Signal', category: 'Messaging', url: 'https://signal.me/#p/{username}', popularity: 72, region: 'global' },
+            { id: 'line', name: 'LINE', category: 'Messaging', url: 'https://line.me/R/ti/p/{username}', popularity: 78, region: 'asia' },
+            { id: 'wechat', name: 'WeChat', category: 'Messaging', url: 'https://wechat.com/{username}', popularity: 92, region: 'china' },
+            { id: 'tinder', name: 'Tinder', category: 'Dating', url: 'https://tinder.com/@{username}', popularity: 81, region: 'global' },
+            { id: 'bumble', name: 'Bumble', category: 'Dating', url: 'https://bumble.com/{username}', popularity: 75, region: 'global' },
+            { id: 'grindr', name: 'Grindr', category: 'Dating', url: 'https://grindr.com/{username}', popularity: 68, region: 'global' },
+            { id: 'goodreads', name: 'Goodreads', category: 'Niche', url: 'https://goodreads.com/{username}', popularity: 74, region: 'global' },
+            { id: 'spotify', name: 'Spotify', category: 'Media', url: 'https://open.spotify.com/user/{username}', popularity: 89, region: 'global' },
+            { id: 'soundcloud', name: 'SoundCloud', category: 'Media', url: 'https://soundcloud.com/{username}', popularity: 79, region: 'global' },
+            { id: 'bandcamp', name: 'Bandcamp', category: 'Media', url: 'https://bandcamp.com/{username}', popularity: 66, region: 'global' },
+            { id: 'deviantart', name: 'DeviantArt', category: 'Media', url: 'https://deviantart.com/{username}', popularity: 71, region: 'global' },
+            { id: 'artstation', name: 'ArtStation', category: 'Professional', url: 'https://artstation.com/{username}', popularity: 67, region: 'global' },
+            { id: 'codepen', name: 'CodePen', category: 'Professional', url: 'https://codepen.io/{username}', popularity: 70, region: 'global' },
+            { id: 'replit', name: 'Replit', category: 'Professional', url: 'https://replit.com/@{username}', popularity: 65, region: 'global' },
+            { id: 'hackerrank', name: 'HackerRank', category: 'Professional', url: 'https://hackerrank.com/{username}', popularity: 68, region: 'global' },
+            { id: 'leetcode', name: 'LeetCode', category: 'Professional', url: 'https://leetcode.com/{username}', popularity: 72, region: 'global' },
+            { id: 'kaggle', name: 'Kaggle', category: 'Professional', url: 'https://kaggle.com/{username}', popularity: 69, region: 'global' },
+            { id: 'researchgate', name: 'ResearchGate', category: 'Professional', url: 'https://researchgate.net/profile/{username}', popularity: 64, region: 'global' },
+            { id: 'academia', name: 'Academia.edu', category: 'Professional', url: 'https://academia.edu/{username}', popularity: 62, region: 'global' },
+            { id: 'orcid', name: 'ORCID', category: 'Professional', url: 'https://orcid.org/{username}', popularity: 60, region: 'global' },
+            { id: 'mastodon', name: 'Mastodon', category: 'Emerging', url: 'https://mastodon.social/@{username}', popularity: 58, region: 'global' },
+            { id: 'bluesky', name: 'Bluesky', category: 'Emerging', url: 'https://bsky.app/profile/{username}', popularity: 55, region: 'global' },
+            { id: 'substack', name: 'Substack', category: 'Blogging', url: 'https://substack.com/profile/{username}', popularity: 66, region: 'global' },
+            { id: 'letterboxd', name: 'Letterboxd', category: 'Niche', url: 'https://letterboxd.com/{username}', popularity: 63, region: 'global' },
+            { id: 'myanimelist', name: 'MyAnimeList', category: 'Niche', url: 'https://myanimelist.net/profile/{username}', popularity: 67, region: 'global' },
+            { id: 'anilist', name: 'AniList', category: 'Niche', url: 'https://anilist.co/user/{username}', popularity: 62, region: 'global' },
+            { id: 'trakt', name: 'Trakt', category: 'Niche', url: 'https://trakt.tv/users/{username}', popularity: 58, region: 'global' },
+            { id: 'lastfm', name: 'Last.fm', category: 'Niche', url: 'https://last.fm/user/{username}', popularity: 71, region: 'global' },
+            { id: 'steam', name: 'Steam', category: 'Gaming', url: 'https://steamcommunity.com/id/{username}', popularity: 87, region: 'global' },
+            { id: 'epicgames', name: 'Epic Games', category: 'Gaming', url: 'https://epicgames.com/account/{username}', popularity: 75, region: 'global' },
+            { id: 'xbox', name: 'Xbox Live', category: 'Gaming', url: 'https://xboxgamertag.com/search/{username}', popularity: 78, region: 'global' },
+            { id: 'playstation', name: 'PlayStation', category: 'Gaming', url: 'https://psnprofiles.com/{username}', popularity: 76, region: 'global' },
+            { id: 'nintendo', name: 'Nintendo', category: 'Gaming', url: 'https://nintendo.com/{username}', popularity: 70, region: 'global' },
+            { id: 'roblox', name: 'Roblox', category: 'Gaming', url: 'https://roblox.com/user/{username}', popularity: 82, region: 'global' },
+            { id: 'minecraft', name: 'Minecraft', category: 'Gaming', url: 'https://minecraft.net/profile/{username}', popularity: 79, region: 'global' },
+            { id: 'origin', name: 'Origin', category: 'Gaming', url: 'https://origin.com/{username}', popularity: 65, region: 'global' },
+            { id: 'ubisoft', name: 'Ubisoft', category: 'Gaming', url: 'https://ubisoft.com/{username}', popularity: 67, region: 'global' },
+            { id: 'gog', name: 'GOG', category: 'Gaming', url: 'https://gog.com/u/{username}', popularity: 61, region: 'global' },
+            { id: 'itchio', name: 'itch.io', category: 'Gaming', url: 'https://itch.io/profile/{username}', popularity: 59, region: 'global' },
+            { id: 'chess', name: 'Chess.com', category: 'Gaming', url: 'https://chess.com/member/{username}', popularity: 68, region: 'global' },
+            { id: 'lichess', name: 'Lichess', category: 'Gaming', url: 'https://lichess.org/@/{username}', popularity: 63, region: 'global' },
+            { id: 'strava', name: 'Strava', category: 'Niche', url: 'https://strava.com/athletes/{username}', popularity: 66, region: 'global' },
+            { id: 'runkeeper', name: 'RunKeeper', category: 'Niche', url: 'https://runkeeper.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'mapmyrun', name: 'MapMyRun', category: 'Niche', url: 'https://mapmyrun.com/profile/{username}', popularity: 57, region: 'global' },
+            { id: 'endomondo', name: 'Endomondo', category: 'Niche', url: 'https://endomondo.com/profile/{username}', popularity: 55, region: 'global' },
+            { id: 'myfitnesspal', name: 'MyFitnessPal', category: 'Niche', url: 'https://myfitnesspal.com/profile/{username}', popularity: 64, region: 'global' },
+            { id: 'fitbit', name: 'Fitbit', category: 'Niche', url: 'https://fitbit.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'garmin', name: 'Garmin', category: 'Niche', url: 'https://connect.garmin.com/modern/profile/{username}', popularity: 60, region: 'global' },
+            { id: 'untappd', name: 'Untappd', category: 'Niche', url: 'https://untappd.com/user/{username}', popularity: 59, region: 'global' },
+            { id: 'beeradvocate', name: 'BeerAdvocate', category: 'Niche', url: 'https://beeradvocate.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'ratebeer', name: 'RateBeer', category: 'Niche', url: 'https://ratebeer.com/user/{username}', popularity: 53, region: 'global' },
+            { id: 'duolingo', name: 'Duolingo', category: 'Niche', url: 'https://duolingo.com/profile/{username}', popularity: 71, region: 'global' },
+            { id: 'memrise', name: 'Memrise', category: 'Niche', url: 'https://memrise.com/user/{username}', popularity: 56, region: 'global' },
+            { id: 'anki', name: 'AnkiWeb', category: 'Niche', url: 'https://ankiweb.net/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'quizlet', name: 'Quizlet', category: 'Niche', url: 'https://quizlet.com/{username}', popularity: 65, region: 'global' },
+            { id: 'khanacademy', name: 'Khan Academy', category: 'Niche', url: 'https://khanacademy.org/profile/{username}', popularity: 63, region: 'global' },
+            { id: 'coursera', name: 'Coursera', category: 'Niche', url: 'https://coursera.org/user/{username}', popularity: 67, region: 'global' },
+            { id: 'udemy', name: 'Udemy', category: 'Niche', url: 'https://udemy.com/user/{username}', popularity: 66, region: 'global' },
+            { id: 'edx', name: 'edX', category: 'Niche', url: 'https://edx.org/user/{username}', popularity: 61, region: 'global' },
+            { id: 'skillshare', name: 'Skillshare', category: 'Niche', url: 'https://skillshare.com/profile/{username}', popularity: 59, region: 'global' },
+            { id: 'futurelearn', name: 'FutureLearn', category: 'Niche', url: 'https://futurelearn.com/profile/{username}', popularity: 55, region: 'global' },
+            { id: 'codecademy', name: 'Codecademy', category: 'Niche', url: 'https://codecademy.com/profiles/{username}', popularity: 68, region: 'global' },
+            { id: 'freecodecamp', name: 'freeCodeCamp', category: 'Niche', url: 'https://freecodecamp.org/{username}', popularity: 72, region: 'global' },
+            { id: 'w3schools', name: 'W3Schools', category: 'Niche', url: 'https://w3schools.com/profile/{username}', popularity: 58, region: 'global' },
+            { id: 'sololearn', name: 'SoloLearn', category: 'Niche', url: 'https://sololearn.com/profile/{username}', popularity: 61, region: 'global' },
+            { id: 'pluralsight', name: 'Pluralsight', category: 'Niche', url: 'https://pluralsight.com/profile/{username}', popularity: 59, region: 'global' },
+            { id: 'udacity', name: 'Udacity', category: 'Niche', url: 'https://udacity.com/{username}', popularity: 57, region: 'global' },
+            { id: 'treehouse', name: 'Treehouse', category: 'Niche', url: 'https://teamtreehouse.com/{username}', popularity: 54, region: 'global' },
+            { id: 'lynda', name: 'Lynda', category: 'Niche', url: 'https://lynda.com/{username}', popularity: 56, region: 'global' },
+            { id: 'datacamp', name: 'DataCamp', category: 'Niche', url: 'https://datacamp.com/profile/{username}', popularity: 58, region: 'global' },
+            { id: 'kaggle', name: 'Kaggle', category: 'Niche', url: 'https://kaggle.com/{username}', popularity: 65, region: 'global' },
+            { id: 'huggingface', name: 'Hugging Face', category: 'Niche', url: 'https://huggingface.co/{username}', popularity: 62, region: 'global' },
+            { id: 'replit', name: 'Replit', category: 'Niche', url: 'https://replit.com/@{username}', popularity: 64, region: 'global' },
+            { id: 'glitch', name: 'Glitch', category: 'Niche', url: 'https://glitch.com/@{username}', popularity: 57, region: 'global' },
+            { id: 'codesandbox', name: 'CodeSandbox', category: 'Niche', url: 'https://codesandbox.io/u/{username}', popularity: 59, region: 'global' },
+            { id: 'jsfiddle', name: 'JSFiddle', category: 'Niche', url: 'https://jsfiddle.net/user/{username}', popularity: 53, region: 'global' },
+            { id: 'codewars', name: 'Codewars', category: 'Niche', url: 'https://codewars.com/users/{username}', popularity: 61, region: 'global' },
+            { id: 'exercism', name: 'Exercism', category: 'Niche', url: 'https://exercism.io/profiles/{username}', popularity: 56, region: 'global' },
+            { id: 'topcoder', name: 'TopCoder', category: 'Niche', url: 'https://topcoder.com/members/{username}', popularity: 54, region: 'global' },
+            { id: 'codeforces', name: 'Codeforces', category: 'Niche', url: 'https://codeforces.com/profile/{username}', popularity: 63, region: 'global' },
+            { id: 'atcoder', name: 'AtCoder', category: 'Niche', url: 'https://atcoder.jp/users/{username}', popularity: 58, region: 'global' },
+            { id: 'projecteuler', name: 'Project Euler', category: 'Niche', url: 'https://projecteuler.net/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'hackerearth', name: 'HackerEarth', category: 'Niche', url: 'https://hackerearth.com/@{username}', popularity: 60, region: 'global' },
+            { id: 'spoj', name: 'SPOJ', category: 'Niche', url: 'https://spoj.com/users/{username}', popularity: 55, region: 'global' },
+            { id: 'codechef', name: 'CodeChef', category: 'Niche', url: 'https://codechef.com/users/{username}', popularity: 62, region: 'global' },
+            { id: 'uri', name: 'URI Online Judge', category: 'Niche', url: 'https://urionlinejudge.com.br/judge/en/profile/{username}', popularity: 53, region: 'global' },
+            { id: 'leetcode', name: 'LeetCode', category: 'Niche', url: 'https://leetcode.com/{username}', popularity: 70, region: 'global' },
+            { id: 'binarysearch', name: 'BinarySearch', category: 'Niche', url: 'https://binarysearch.com/@/{username}', popularity: 51, region: 'global' },
+            { id: 'algoexpert', name: 'AlgoExpert', category: 'Niche', url: 'https://algoexpert.io/user/{username}', popularity: 54, region: 'global' },
+            { id: 'frontendmentor', name: 'Frontend Mentor', category: 'Niche', url: 'https://frontendmentor.io/profile/{username}', popularity: 58, region: 'global' },
+            { id: 'devto', name: 'Dev.to', category: 'Niche', url: 'https://dev.to/{username}', popularity: 67, region: 'global' },
+            { id: 'hashnode', name: 'Hashnode', category: 'Niche', url: 'https://hashnode.com/@{username}', popularity: 63, region: 'global' },
+            { id: 'devpost', name: 'Devpost', category: 'Niche', url: 'https://devpost.com/{username}', popularity: 56, region: 'global' },
+            { id: 'producthunt', name: 'Product Hunt', category: 'Niche', url: 'https://producthunt.com/@{username}', popularity: 65, region: 'global' },
+            { id: 'betapage', name: 'BetaPage', category: 'Niche', url: 'https://betapage.co/user/{username}', popularity: 51, region: 'global' },
+            { id: 'makerpad', name: 'Makerpad', category: 'Niche', url: 'https://makerpad.co/@/{username}', popularity: 52, region: 'global' },
+            { id: 'indiehackers', name: 'Indie Hackers', category: 'Niche', url: 'https://indiehackers.com/{username}', popularity: 60, region: 'global' },
+            { id: 'nomadlist', name: 'Nomad List', category: 'Niche', url: 'https://nomadlist.com/{username}', popularity: 57, region: 'global' },
+            { id: 'remoteok', name: 'Remote OK', category: 'Niche', url: 'https://remoteok.io/@{username}', popularity: 55, region: 'global' },
+            { id: 'weworkremotely', name: 'We Work Remotely', category: 'Niche', url: 'https://weworkremotely.com/@{username}', popularity: 53, region: 'global' },
+            { id: 'angelco', name: 'AngelList', category: 'Niche', url: 'https://angel.co/u/{username}', popularity: 64, region: 'global' },
+            { id: 'crunchbase', name: 'Crunchbase', category: 'Niche', url: 'https://crunchbase.com/person/{username}', popularity: 61, region: 'global' },
+            { id: 'pitchbook', name: 'PitchBook', category: 'Niche', url: 'https://pitchbook.com/profiles/{username}', popularity: 52, region: 'global' },
+            { id: 'glassdoor', name: 'Glassdoor', category: 'Niche', url: 'https://glassdoor.com/profile/{username}', popularity: 66, region: 'global' },
+            { id: 'indeed', name: 'Indeed', category: 'Niche', url: 'https://indeed.com/profile/{username}', popularity: 68, region: 'global' },
+            { id: 'monster', name: 'Monster', category: 'Niche', url: 'https://monster.com/profile/{username}', popularity: 57, region: 'global' },
+            { id: 'careerbuilder', name: 'CareerBuilder', category: 'Niche', url: 'https://careerbuilder.com/{username}', popularity: 55, region: 'global' },
+            { id: 'ziprecruiter', name: 'ZipRecruiter', category: 'Niche', url: 'https://ziprecruiter.com/profile/{username}', popularity: 56, region: 'global' },
+            { id: 'dice', name: 'Dice', category: 'Niche', url: 'https://dice.com/profile/{username}', popularity: 53, region: 'global' },
+            { id: 'simplyhired', name: 'SimplyHired', category: 'Niche', url: 'https://simplyhired.com/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'flexjobs', name: 'FlexJobs', category: 'Niche', url: 'https://flexjobs.com/profile/{username}', popularity: 54, region: 'global' },
+            { id: 'upwork', name: 'Upwork', category: 'Niche', url: 'https://upwork.com/freelancers/{username}', popularity: 69, region: 'global' },
+            { id: 'fiverr', name: 'Fiverr', category: 'Niche', url: 'https://fiverr.com/{username}', popularity: 71, region: 'global' },
+            { id: 'toptal', name: 'Toptal', category: 'Niche', url: 'https://toptal.com/{username}', popularity: 63, region: 'global' },
+            { id: 'peopleperhour', name: 'PeoplePerHour', category: 'Niche', url: 'https://peopleperhour.com/freelancer/{username}', popularity: 58, region: 'global' },
+            { id: 'freelancer', name: 'Freelancer', category: 'Niche', url: 'https://freelancer.com/u/{username}', popularity: 65, region: 'global' },
+            { id: 'guru', name: 'Guru', category: 'Niche', url: 'https://guru.com/freelancers/{username}', popularity: 57, region: 'global' },
+            { id: '99designs', name: '99designs', category: 'Niche', url: 'https://99designs.com/profiles/{username}', popularity: 60, region: 'global' },
+            { id: 'designcrowd', name: 'DesignCrowd', category: 'Niche', url: 'https://designcrowd.com/designer/{username}', popularity: 55, region: 'global' },
+            { id: 'crowdspring', name: 'Crowdspring', category: 'Niche', url: 'https://crowdspring.com/profile/{username}', popularity: 53, region: 'global' },
+            { id: 'malt', name: 'Malt', category: 'Niche', url: 'https://malt.com/profile/{username}', popularity: 56, region: 'global' },
+            { id: 'comet', name: 'Comet', category: 'Niche', url: 'https://comet.com/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'codeable', name: 'Codeable', category: 'Niche', url: 'https://codeable.io/developers/{username}', popularity: 54, region: 'global' },
+            { id: 'gun.io', name: 'Gun.io', category: 'Niche', url: 'https://gun.io/{username}', popularity: 53, region: 'global' },
+            { id: 'writeroom', name: 'WriteRoom', category: 'Niche', url: 'https://writeroom.co/{username}', popularity: 51, region: 'global' },
+            { id: 'contently', name: 'Contently', category: 'Niche', url: 'https://contently.com/{username}', popularity: 58, region: 'global' },
+            { id: 'skyword', name: 'Skyword', category: 'Niche', url: 'https://skyword.com/{username}', popularity: 52, region: 'global' },
+            { id: 'scripted', name: 'Scripted', category: 'Niche', url: 'https://scripted.com/writers/{username}', popularity: 54, region: 'global' },
+            { id: 'textbroker', name: 'Textbroker', category: 'Niche', url: 'https://textbroker.com/{username}', popularity: 53, region: 'global' },
+            { id: 'iwriter', name: 'iWriter', category: 'Niche', url: 'https://iwriter.com/{username}', popularity: 52, region: 'global' },
+            { id: 'constantcontent', name: 'Constant Content', category: 'Niche', url: 'https://constant-content.com/{username}', popularity: 51, region: 'global' },
+            { id: 'blogmutt', name: 'BlogMutt', category: 'Niche', url: 'https://blogmutt.com/{username}', popularity: 52, region: 'global' },
+            { id: 'crowdcontent', name: 'Crowd Content', category: 'Niche', url: 'https://crowdcontent.com/{username}', popularity: 53, region: 'global' },
+            { id: 'writeraccess', name: 'WriterAccess', category: 'Niche', url: 'https://writeraccess.com/writer/{username}', popularity: 54, region: 'global' },
+            { id: 'verblio', name: 'Verblio', category: 'Niche', url: 'https://verblio.com/{username}', popularity: 52, region: 'global' },
+            { id: 'contentfly', name: 'ContentFly', category: 'Niche', url: 'https://contentfly.com/{username}', popularity: 51, region: 'global' },
+            { id: 'copify', name: 'Copify', category: 'Niche', url: 'https://copify.com/{username}', popularity: 52, region: 'global' },
+            { id: 'wordagents', name: 'WordAgents', category: 'Niche', url: 'https://wordagents.com/{username}', popularity: 53, region: 'global' },
+            { id: 'brafton', name: 'Brafton', category: 'Niche', url: 'https://brafton.com/{username}', popularity: 54, region: 'global' },
+            { id: 'seo', name: 'SEO', category: 'Niche', url: 'https://seo.com/{username}', popularity: 55, region: 'global' },
+            { id: 'semrush', name: 'SEMrush', category: 'Niche', url: 'https://semrush.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'moz', name: 'Moz', category: 'Niche', url: 'https://moz.com/community/users/{username}', popularity: 61, region: 'global' },
+            { id: 'ahrefs', name: 'Ahrefs', category: 'Niche', url: 'https://ahrefs.com/user/{username}', popularity: 63, region: 'global' },
+            { id: 'serpstat', name: 'SERPstat', category: 'Niche', url: 'https://serpstat.com/user/{username}', popularity: 56, region: 'global' },
+            { id: 'spyfu', name: 'SpyFu', category: 'Niche', url: 'https://spyfu.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'ubersuggest', name: 'Ubersuggest', category: 'Niche', url: 'https://ubersuggest.com/user/{username}', popularity: 57, region: 'global' },
+            { id: 'screamingfrog', name: 'Screaming Frog', category: 'Niche', url: 'https://screamingfrog.co.uk/user/{username}', popularity: 54, region: 'global' },
+            { id: 'deepcrawl', name: 'DeepCrawl', category: 'Niche', url: 'https://deepcrawl.com/user/{username}', popularity: 53, region: 'global' },
+            { id: 'sitebulb', name: 'Sitebulb', category: 'Niche', url: 'https://sitebulb.com/user/{username}', popularity: 52, region: 'global' },
+            { id: 'seoclarity', name: 'SEOClarity', category: 'Niche', url: 'https://seoclarity.net/user/{username}', popularity: 51, region: 'global' },
+            { id: 'seomonitor', name: 'SEOmator', category: 'Niche', url: 'https://seomonitor.com/user/{username}', popularity: 52, region: 'global' },
+            { id: 'seobility', name: 'Seobility', category: 'Niche', url: 'https://seobility.net/user/{username}', popularity: 53, region: 'global' },
+            { id: 'wincher', name: 'Wincher', category: 'Niche', url: 'https://wincher.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'accuracer', name: 'AccuRanker', category: 'Niche', url: 'https://accuranker.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'nightwatch', name: 'Nightwatch', category: 'Niche', url: 'https://nightwatch.io/user/{username}', popularity: 56, region: 'global' },
+            { id: 'seoprofiler', name: 'SEOprofiler', category: 'Niche', url: 'https://seoprofiler.com/user/{username}', popularity: 57, region: 'global' },
+            { id: 'kwfinder', name: 'KWFinder', category: 'Niche', url: 'https://kwfinder.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'keywordtool', name: 'Keyword Tool', category: 'Niche', url: 'https://keywordtool.io/user/{username}', popularity: 59, region: 'global' },
+            { id: 'keywordeverywhere', name: 'Keyword Everywhere', category: 'Niche', url: 'https://keywordseverywhere.com/user/{username}', popularity: 60, region: 'global' },
+            { id: 'answerthepublic', name: 'AnswerThePublic', category: 'Niche', url: 'https://answerthepublic.com/user/{username}', popularity: 61, region: 'global' },
+            { id: 'alsoasked', name: 'AlsoAsked', category: 'Niche', url: 'https://alsoasked.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'peoplealsoask', name: 'People Also Ask', category: 'Niche', url: 'https://peoplealsoask.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'questiondb', name: 'QuestionDB', category: 'Niche', url: 'https://questiondb.io/user/{username}', popularity: 53, region: 'global' },
+            { id: 'explodingtopics', name: 'Exploding Topics', category: 'Niche', url: 'https://explodingtopics.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'googlealerts', name: 'Google Alerts', category: 'Niche', url: 'https://google.com/alerts/{username}', popularity: 68, region: 'global' },
+            { id: 'talkwalker', name: 'Talkwalker', category: 'Niche', url: 'https://talkwalker.com/user/{username}', popularity: 59, region: 'global' },
+            { id: 'brandwatch', name: 'Brandwatch', category: 'Niche', url: 'https://brandwatch.com/user/{username}', popularity: 63, region: 'global' },
+            { id: 'mention', name: 'Mention', category: 'Niche', url: 'https://mention.com/user/{username}', popularity: 61, region: 'global' },
+            { id: 'awario', name: 'Awario', category: 'Niche', url: 'https://awario.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'socialsearcher', name: 'Social Searcher', category: 'Niche', url: 'https://social-searcher.com/user/{username}', popularity: 57, region: 'global' },
+            { id: 'huntsuite', name: 'Hunt Suite', category: 'Niche', url: 'https://hunt.suite/user/{username}', popularity: 56, region: 'global' },
+            { id: 'f5bot', name: 'F5Bot', category: 'Niche', url: 'https://f5bot.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'ifttt', name: 'IFTTT', category: 'Niche', url: 'https://ifttt.com/{username}', popularity: 67, region: 'global' },
+            { id: 'zapier', name: 'Zapier', category: 'Niche', url: 'https://zapier.com/apps/user/{username}', popularity: 69, region: 'global' },
+            { id: 'integromat', name: 'Integromat', category: 'Niche', url: 'https://integromat.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'automateio', name: 'Automate.io', category: 'Niche', url: 'https://automate.io/user/{username}', popularity: 57, region: 'global' },
+            { id: 'pipedream', name: 'Pipedream', category: 'Niche', url: 'https://pipedream.com/user/{username}', popularity: 59, region: 'global' },
+            { id: 'n8n', name: 'n8n', category: 'Niche', url: 'https://n8n.io/user/{username}', popularity: 56, region: 'global' },
+            { id: 'make', name: 'Make', category: 'Niche', url: 'https://make.com/user/{username}', popularity: 60, region: 'global' },
+            { id: 'workato', name: 'Workato', category: 'Niche', url: 'https://workato.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'trayio', name: 'Tray.io', category: 'Niche', url: 'https://tray.io/user/{username}', popularity: 57, region: 'global' },
+            { id: 'cloudhq', name: 'CloudHQ', category: 'Niche', url: 'https://cloudhq.net/user/{username}', popularity: 56, region: 'global' },
+            { id: 'elasticio', name: 'elastic.io', category: 'Niche', url: 'https://elastic.io/user/{username}', popularity: 55, region: 'global' },
+            { id: 'piesync', name: 'PieSync', category: 'Niche', url: 'https://piesync.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'syncapps', name: 'SyncApps', category: 'Niche', url: 'https://syncapps.com/user/{username}', popularity: 53, region: 'global' },
+            { id: 'celigo', name: 'Celigo', category: 'Niche', url: 'https://celigo.com/user/{username}', popularity: 52, region: 'global' },
+            { id: 'jitterbit', name: 'Jitterbit', category: 'Niche', url: 'https://jitterbit.com/user/{username}', popularity: 51, region: 'global' },
+            { id: 'mulesoft', name: 'MuleSoft', category: 'Niche', url: 'https://mulesoft.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'boomi', name: 'Boomi', category: 'Niche', url: 'https://boomi.com/user/{username}', popularity: 61, region: 'global' },
+            { id: 'informatica', name: 'Informatica', category: 'Niche', url: 'https://informatica.com/user/{username}', popularity: 60, region: 'global' },
+            { id: 'snapchat', name: 'Snapchat', category: 'Mainstream', url: 'https://snapchat.com/add/{username}', popularity: 86, region: 'global' },
+            { id: 'telegram', name: 'Telegram', category: 'Messaging', url: 'https://t.me/{username}', popularity: 84, region: 'global' },
+            { id: 'whatsapp', name: 'WhatsApp', category: 'Messaging', url: 'https://wa.me/{username}', popularity: 95, region: 'global' },
+            { id: 'signal', name: 'Signal', category: 'Messaging', url: 'https://signal.me/#p/{username}', popularity: 72, region: 'global' },
+            { id: 'line', name: 'LINE', category: 'Messaging', url: 'https://line.me/R/ti/p/{username}', popularity: 78, region: 'asia' },
+            { id: 'wechat', name: 'WeChat', category: 'Messaging', url: 'https://wechat.com/{username}', popularity: 92, region: 'china' },
+            { id: 'tinder', name: 'Tinder', category: 'Dating', url: 'https://tinder.com/@{username}', popularity: 81, region: 'global' },
+            { id: 'bumble', name: 'Bumble', category: 'Dating', url: 'https://bumble.com/{username}', popularity: 75, region: 'global' },
+            { id: 'grindr', name: 'Grindr', category: 'Dating', url: 'https://grindr.com/{username}', popularity: 68, region: 'global' },
+            { id: 'goodreads', name: 'Goodreads', category: 'Niche', url: 'https://goodreads.com/{username}', popularity: 74, region: 'global' },
+            { id: 'spotify', name: 'Spotify', category: 'Media', url: 'https://open.spotify.com/user/{username}', popularity: 89, region: 'global' },
+            { id: 'soundcloud', name: 'SoundCloud', category: 'Media', url: 'https://soundcloud.com/{username}', popularity: 79, region: 'global' },
+            { id: 'bandcamp', name: 'Bandcamp', category: 'Media', url: 'https://bandcamp.com/{username}', popularity: 66, region: 'global' },
+            { id: 'deviantart', name: 'DeviantArt', category: 'Media', url: 'https://deviantart.com/{username}', popularity: 71, region: 'global' },
+            { id: 'artstation', name: 'ArtStation', category: 'Professional', url: 'https://artstation.com/{username}', popularity: 67, region: 'global' },
+            { id: 'codepen', name: 'CodePen', category: 'Professional', url: 'https://codepen.io/{username}', popularity: 70, region: 'global' },
+            { id: 'replit', name: 'Replit', category: 'Professional', url: 'https://replit.com/@{username}', popularity: 65, region: 'global' },
+            { id: 'hackerrank', name: 'HackerRank', category: 'Professional', url: 'https://hackerrank.com/{username}', popularity: 68, region: 'global' },
+            { id: 'leetcode', name: 'LeetCode', category: 'Professional', url: 'https://leetcode.com/{username}', popularity: 72, region: 'global' },
+            { id: 'kaggle', name: 'Kaggle', category: 'Professional', url: 'https://kaggle.com/{username}', popularity: 69, region: 'global' },
+            { id: 'researchgate', name: 'ResearchGate', category: 'Professional', url: 'https://researchgate.net/profile/{username}', popularity: 64, region: 'global' },
+            { id: 'academia', name: 'Academia.edu', category: 'Professional', url: 'https://academia.edu/{username}', popularity: 62, region: 'global' },
+            { id: 'orcid', name: 'ORCID', category: 'Professional', url: 'https://orcid.org/{username}', popularity: 60, region: 'global' },
+            { id: 'mastodon', name: 'Mastodon', category: 'Emerging', url: 'https://mastodon.social/@{username}', popularity: 58, region: 'global' },
+            { id: 'bluesky', name: 'Bluesky', category: 'Emerging', url: 'https://bsky.app/profile/{username}', popularity: 55, region: 'global' },
+            { id: 'substack', name: 'Substack', category: 'Blogging', url: 'https://substack.com/profile/{username}', popularity: 66, region: 'global' },
+            { id: 'letterboxd', name: 'Letterboxd', category: 'Niche', url: 'https://letterboxd.com/{username}', popularity: 63, region: 'global' },
+            { id: 'myanimelist', name: 'MyAnimeList', category: 'Niche', url: 'https://myanimelist.net/profile/{username}', popularity: 67, region: 'global' },
+            { id: 'anilist', name: 'AniList', category: 'Niche', url: 'https://anilist.co/user/{username}', popularity: 62, region: 'global' },
+            { id: 'trakt', name: 'Trakt', category: 'Niche', url: 'https://trakt.tv/users/{username}', popularity: 58, region: 'global' },
+            { id: 'lastfm', name: 'Last.fm', category: 'Niche', url: 'https://last.fm/user/{username}', popularity: 71, region: 'global' },
+            { id: 'steam', name: 'Steam', category: 'Gaming', url: 'https://steamcommunity.com/id/{username}', popularity: 87, region: 'global' },
+            { id: 'epicgames', name: 'Epic Games', category: 'Gaming', url: 'https://epicgames.com/account/{username}', popularity: 75, region: 'global' },
+            { id: 'xbox', name: 'Xbox Live', category: 'Gaming', url: 'https://xboxgamertag.com/search/{username}', popularity: 78, region: 'global' },
+            { id: 'playstation', name: 'PlayStation', category: 'Gaming', url: 'https://psnprofiles.com/{username}', popularity: 76, region: 'global' },
+            { id: 'nintendo', name: 'Nintendo', category: 'Gaming', url: 'https://nintendo.com/{username}', popularity: 70, region: 'global' },
+            { id: 'roblox', name: 'Roblox', category: 'Gaming', url: 'https://roblox.com/user/{username}', popularity: 82, region: 'global' },
+            { id: 'minecraft', name: 'Minecraft', category: 'Gaming', url: 'https://minecraft.net/profile/{username}', popularity: 79, region: 'global' },
+            { id: 'origin', name: 'Origin', category: 'Gaming', url: 'https://origin.com/{username}', popularity: 65, region: 'global' },
+            { id: 'ubisoft', name: 'Ubisoft', category: 'Gaming', url: 'https://ubisoft.com/{username}', popularity: 67, region: 'global' },
+            { id: 'gog', name: 'GOG', category: 'Gaming', url: 'https://gog.com/u/{username}', popularity: 61, region: 'global' },
+            { id: 'itchio', name: 'itch.io', category: 'Gaming', url: 'https://itch.io/profile/{username}', popularity: 59, region: 'global' },
+            { id: 'chess', name: 'Chess.com', category: 'Gaming', url: 'https://chess.com/member/{username}', popularity: 68, region: 'global' },
+            { id: 'lichess', name: 'Lichess', category: 'Gaming', url: 'https://lichess.org/@/{username}', popularity: 63, region: 'global' },
+            { id: 'strava', name: 'Strava', category: 'Niche', url: 'https://strava.com/athletes/{username}', popularity: 66, region: 'global' },
+            { id: 'runkeeper', name: 'RunKeeper', category: 'Niche', url: 'https://runkeeper.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'mapmyrun', name: 'MapMyRun', category: 'Niche', url: 'https://mapmyrun.com/profile/{username}', popularity: 57, region: 'global' },
+            { id: 'endomondo', name: 'Endomondo', category: 'Niche', url: 'https://endomondo.com/profile/{username}', popularity: 55, region: 'global' },
+            { id: 'myfitnesspal', name: 'MyFitnessPal', category: 'Niche', url: 'https://myfitnesspal.com/profile/{username}', popularity: 64, region: 'global' },
+            { id: 'fitbit', name: 'Fitbit', category: 'Niche', url: 'https://fitbit.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'garmin', name: 'Garmin', category: 'Niche', url: 'https://connect.garmin.com/modern/profile/{username}', popularity: 60, region: 'global' },
+            { id: 'untappd', name: 'Untappd', category: 'Niche', url: 'https://untappd.com/user/{username}', popularity: 59, region: 'global' },
+            { id: 'beeradvocate', name: 'BeerAdvocate', category: 'Niche', url: 'https://beeradvocate.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'ratebeer', name: 'RateBeer', category: 'Niche', url: 'https://ratebeer.com/user/{username}', popularity: 53, region: 'global' },
+            { id: 'duolingo', name: 'Duolingo', category: 'Niche', url: 'https://duolingo.com/profile/{username}', popularity: 71, region: 'global' },
+            { id: 'memrise', name: 'Memrise', category: 'Niche', url: 'https://memrise.com/user/{username}', popularity: 56, region: 'global' },
+            { id: 'anki', name: 'AnkiWeb', category: 'Niche', url: 'https://ankiweb.net/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'quizlet', name: 'Quizlet', category: 'Niche', url: 'https://quizlet.com/{username}', popularity: 65, region: 'global' },
+            { id: 'khanacademy', name: 'Khan Academy', category: 'Niche', url: 'https://khanacademy.org/profile/{username}', popularity: 63, region: 'global' },
+            { id: 'coursera', name: 'Coursera', category: 'Niche', url: 'https://coursera.org/user/{username}', popularity: 67, region: 'global' },
+            { id: 'udemy', name: 'Udemy', category: 'Niche', url: 'https://udemy.com/user/{username}', popularity: 66, region: 'global' },
+            { id: 'edx', name: 'edX', category: 'Niche', url: 'https://edx.org/user/{username}', popularity: 61, region: 'global' },
+            { id: 'skillshare', name: 'Skillshare', category: 'Niche', url: 'https://skillshare.com/profile/{username}', popularity: 59, region: 'global' },
+            { id: 'futurelearn', name: 'FutureLearn', category: 'Niche', url: 'https://futurelearn.com/profile/{username}', popularity: 55, region: 'global' },
+            { id: 'codecademy', name: 'Codecademy', category: 'Niche', url: 'https://codecademy.com/profiles/{username}', popularity: 68, region: 'global' },
+            { id: 'freecodecamp', name: 'freeCodeCamp', category: 'Niche', url: 'https://freecodecamp.org/{username}', popularity: 72, region: 'global' },
+            { id: 'w3schools', name: 'W3Schools', category: 'Niche', url: 'https://w3schools.com/profile/{username}', popularity: 58, region: 'global' },
+            { id: 'sololearn', name: 'SoloLearn', category: 'Niche', url: 'https://sololearn.com/profile/{username}', popularity: 61, region: 'global' },
+            { id: 'pluralsight', name: 'Pluralsight', category: 'Niche', url: 'https://pluralsight.com/profile/{username}', popularity: 59, region: 'global' },
+            { id: 'udacity', name: 'Udacity', category: 'Niche', url: 'https://udacity.com/{username}', popularity: 57, region: 'global' },
+            { id: 'treehouse', name: 'Treehouse', category: 'Niche', url: 'https://teamtreehouse.com/{username}', popularity: 54, region: 'global' },
+            { id: 'lynda', name: 'Lynda', category: 'Niche', url: 'https://lynda.com/{username}', popularity: 56, region: 'global' },
+            { id: 'datacamp', name: 'DataCamp', category: 'Niche', url: 'https://datacamp.com/profile/{username}', popularity: 58, region: 'global' },
+            { id: 'kaggle', name: 'Kaggle', category: 'Niche', url: 'https://kaggle.com/{username}', popularity: 65, region: 'global' },
+            { id: 'huggingface', name: 'Hugging Face', category: 'Niche', url: 'https://huggingface.co/{username}', popularity: 62, region: 'global' },
+            { id: 'replit', name: 'Replit', category: 'Niche', url: 'https://replit.com/@{username}', popularity: 64, region: 'global' },
+            { id: 'glitch', name: 'Glitch', category: 'Niche', url: 'https://glitch.com/@{username}', popularity: 57, region: 'global' },
+            { id: 'codesandbox', name: 'CodeSandbox', category: 'Niche', url: 'https://codesandbox.io/u/{username}', popularity: 59, region: 'global' },
+            { id: 'jsfiddle', name: 'JSFiddle', category: 'Niche', url: 'https://jsfiddle.net/user/{username}', popularity: 53, region: 'global' },
+            { id: 'codewars', name: 'Codewars', category: 'Niche', url: 'https://codewars.com/users/{username}', popularity: 61, region: 'global' },
+            { id: 'exercism', name: 'Exercism', category: 'Niche', url: 'https://exercism.io/profiles/{username}', popularity: 56, region: 'global' },
+            { id: 'topcoder', name: 'TopCoder', category: 'Niche', url: 'https://topcoder.com/members/{username}', popularity: 54, region: 'global' },
+            { id: 'codeforces', name: 'Codeforces', category: 'Niche', url: 'https://codeforces.com/profile/{username}', popularity: 63, region: 'global' },
+            { id: 'atcoder', name: 'AtCoder', category: 'Niche', url: 'https://atcoder.jp/users/{username}', popularity: 58, region: 'global' },
+            { id: 'projecteuler', name: 'Project Euler', category: 'Niche', url: 'https://projecteuler.net/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'hackerearth', name: 'HackerEarth', category: 'Niche', url: 'https://hackerearth.com/@{username}', popularity: 60, region: 'global' },
+            { id: 'spoj', name: 'SPOJ', category: 'Niche', url: 'https://spoj.com/users/{username}', popularity: 55, region: 'global' },
+            { id: 'codechef', name: 'CodeChef', category: 'Niche', url: 'https://codechef.com/users/{username}', popularity: 62, region: 'global' },
+            { id: 'uri', name: 'URI Online Judge', category: 'Niche', url: 'https://urionlinejudge.com.br/judge/en/profile/{username}', popularity: 53, region: 'global' },
+            { id: 'leetcode', name: 'LeetCode', category: 'Niche', url: 'https://leetcode.com/{username}', popularity: 70, region: 'global' },
+            { id: 'binarysearch', name: 'BinarySearch', category: 'Niche', url: 'https://binarysearch.com/@/{username}', popularity: 51, region: 'global' },
+            { id: 'algoexpert', name: 'AlgoExpert', category: 'Niche', url: 'https://algoexpert.io/user/{username}', popularity: 54, region: 'global' },
+            { id: 'frontendmentor', name: 'Frontend Mentor', category: 'Niche', url: 'https://frontendmentor.io/profile/{username}', popularity: 58, region: 'global' },
+            { id: 'devto', name: 'Dev.to', category: 'Niche', url: 'https://dev.to/{username}', popularity: 67, region: 'global' },
+            { id: 'hashnode', name: 'Hashnode', category: 'Niche', url: 'https://hashnode.com/@{username}', popularity: 63, region: 'global' },
+            { id: 'devpost', name: 'Devpost', category: 'Niche', url: 'https://devpost.com/{username}', popularity: 56, region: 'global' },
+            { id: 'producthunt', name: 'Product Hunt', category: 'Niche', url: 'https://producthunt.com/@{username}', popularity: 65, region: 'global' },
+            { id: 'betapage', name: 'BetaPage', category: 'Niche', url: 'https://betapage.co/user/{username}', popularity: 51, region: 'global' },
+            { id: 'makerpad', name: 'Makerpad', category: 'Niche', url: 'https://makerpad.co/@/{username}', popularity: 52, region: 'global' },
+            { id: 'indiehackers', name: 'Indie Hackers', category: 'Niche', url: 'https://indiehackers.com/{username}', popularity: 60, region: 'global' },
+            { id: 'nomadlist', name: 'Nomad List', category: 'Niche', url: 'https://nomadlist.com/{username}', popularity: 57, region: 'global' },
+            { id: 'remoteok', name: 'Remote OK', category: 'Niche', url: 'https://remoteok.io/@{username}', popularity: 55, region: 'global' },
+            { id: 'weworkremotely', name: 'We Work Remotely', category: 'Niche', url: 'https://weworkremotely.com/@{username}', popularity: 53, region: 'global' },
+            { id: 'angelco', name: 'AngelList', category: 'Niche', url: 'https://angel.co/u/{username}', popularity: 64, region: 'global' },
+            { id: 'crunchbase', name: 'Crunchbase', category: 'Niche', url: 'https://crunchbase.com/person/{username}', popularity: 61, region: 'global' },
+            { id: 'pitchbook', name: 'PitchBook', category: 'Niche', url: 'https://pitchbook.com/profiles/{username}', popularity: 52, region: 'global' },
+            { id: 'glassdoor', name: 'Glassdoor', category: 'Niche', url: 'https://glassdoor.com/profile/{username}', popularity: 66, region: 'global' },
+            { id: 'indeed', name: 'Indeed', category: 'Niche', url: 'https://indeed.com/profile/{username}', popularity: 68, region: 'global' },
+            { id: 'monster', name: 'Monster', category: 'Niche', url: 'https://monster.com/profile/{username}', popularity: 57, region: 'global' },
+            { id: 'careerbuilder', name: 'CareerBuilder', category: 'Niche', url: 'https://careerbuilder.com/{username}', popularity: 55, region: 'global' },
+            { id: 'ziprecruiter', name: 'ZipRecruiter', category: 'Niche', url: 'https://ziprecruiter.com/profile/{username}', popularity: 56, region: 'global' },
+            { id: 'dice', name: 'Dice', category: 'Niche', url: 'https://dice.com/profile/{username}', popularity: 53, region: 'global' },
+            { id: 'simplyhired', name: 'SimplyHired', category: 'Niche', url: 'https://simplyhired.com/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'flexjobs', name: 'FlexJobs', category: 'Niche', url: 'https://flexjobs.com/profile/{username}', popularity: 54, region: 'global' },
+            { id: 'upwork', name: 'Upwork', category: 'Niche', url: 'https://upwork.com/freelancers/{username}', popularity: 69, region: 'global' },
+            { id: 'fiverr', name: 'Fiverr', category: 'Niche', url: 'https://fiverr.com/{username}', popularity: 71, region: 'global' },
+            { id: 'toptal', name: 'Toptal', category: 'Niche', url: 'https://toptal.com/{username}', popularity: 63, region: 'global' },
+            { id: 'peopleperhour', name: 'PeoplePerHour', category: 'Niche', url: 'https://peopleperhour.com/freelancer/{username}', popularity: 58, region: 'global' },
+            { id: 'freelancer', name: 'Freelancer', category: 'Niche', url: 'https://freelancer.com/u/{username}', popularity: 65, region: 'global' },
+            { id: 'guru', name: 'Guru', category: 'Niche', url: 'https://guru.com/freelancers/{username}', popularity: 57, region: 'global' },
+            { id: '99designs', name: '99designs', category: 'Niche', url: 'https://99designs.com/profiles/{username}', popularity: 60, region: 'global' },
+            { id: 'designcrowd', name: 'DesignCrowd', category: 'Niche', url: 'https://designcrowd.com/designer/{username}', popularity: 55, region: 'global' },
+            { id: 'crowdspring', name: 'Crowdspring', category: 'Niche', url: 'https://crowdspring.com/profile/{username}', popularity: 53, region: 'global' },
+            { id: 'malt', name: 'Malt', category: 'Niche', url: 'https://malt.com/profile/{username}', popularity: 56, region: 'global' },
+            { id: 'comet', name: 'Comet', category: 'Niche', url: 'https://comet.com/profile/{username}', popularity: 52, region: 'global' },
+            { id: 'codeable', name: 'Codeable', category: 'Niche', url: 'https://codeable.io/developers/{username}', popularity: 54, region: 'global' },
+            { id: 'gun.io', name: 'Gun.io', category: 'Niche', url: 'https://gun.io/{username}', popularity: 53, region: 'global' },
+            { id: 'writeroom', name: 'WriteRoom', category: 'Niche', url: 'https://writeroom.co/{username}', popularity: 51, region: 'global' },
+            { id: 'contently', name: 'Contently', category: 'Niche', url: 'https://contently.com/{username}', popularity: 58, region: 'global' },
+            { id: 'skyword', name: 'Skyword', category: 'Niche', url: 'https://skyword.com/{username}', popularity: 52, region: 'global' },
+            { id: 'scripted', name: 'Scripted', category: 'Niche', url: 'https://scripted.com/writers/{username}', popularity: 54, region: 'global' },
+            { id: 'textbroker', name: 'Textbroker', category: 'Niche', url: 'https://textbroker.com/{username}', popularity: 53, region: 'global' },
+            { id: 'iwriter', name: 'iWriter', category: 'Niche', url: 'https://iwriter.com/{username}', popularity: 52, region: 'global' },
+            { id: 'constantcontent', name: 'Constant Content', category: 'Niche', url: 'https://constant-content.com/{username}', popularity: 51, region: 'global' },
+            { id: 'blogmutt', name: 'BlogMutt', category: 'Niche', url: 'https://blogmutt.com/{username}', popularity: 52, region: 'global' },
+            { id: 'crowdcontent', name: 'Crowd Content', category: 'Niche', url: 'https://crowdcontent.com/{username}', popularity: 53, region: 'global' },
+            { id: 'writeraccess', name: 'WriterAccess', category: 'Niche', url: 'https://writeraccess.com/writer/{username}', popularity: 54, region: 'global' },
+            { id: 'verblio', name: 'Verblio', category: 'Niche', url: 'https://verblio.com/{username}', popularity: 52, region: 'global' },
+            { id: 'contentfly', name: 'ContentFly', category: 'Niche', url: 'https://contentfly.com/{username}', popularity: 51, region: 'global' },
+            { id: 'copify', name: 'Copify', category: 'Niche', url: 'https://copify.com/{username}', popularity: 52, region: 'global' },
+            { id: 'wordagents', name: 'WordAgents', category: 'Niche', url: 'https://wordagents.com/{username}', popularity: 53, region: 'global' },
+            { id: 'brafton', name: 'Brafton', category: 'Niche', url: 'https://brafton.com/{username}', popularity: 54, region: 'global' },
+            { id: 'seo', name: 'SEO', category: 'Niche', url: 'https://seo.com/{username}', popularity: 55, region: 'global' },
+            { id: 'semrush', name: 'SEMrush', category: 'Niche', url: 'https://semrush.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'moz', name: 'Moz', category: 'Niche', url: 'https://moz.com/community/users/{username}', popularity: 61, region: 'global' },
+            { id: 'ahrefs', name: 'Ahrefs', category: 'Niche', url: 'https://ahrefs.com/user/{username}', popularity: 63, region: 'global' },
+            { id: 'serpstat', name: 'SERPstat', category: 'Niche', url: 'https://serpstat.com/user/{username}', popularity: 56, region: 'global' },
+            { id: 'spyfu', name: 'SpyFu', category: 'Niche', url: 'https://spyfu.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'ubersuggest', name: 'Ubersuggest', category: 'Niche', url: 'https://ubersuggest.com/user/{username}', popularity: 57, region: 'global' },
+            { id: 'screamingfrog', name: 'Screaming Frog', category: 'Niche', url: 'https://screamingfrog.co.uk/user/{username}', popularity: 54, region: 'global' },
+            { id: 'deepcrawl', name: 'DeepCrawl', category: 'Niche', url: 'https://deepcrawl.com/user/{username}', popularity: 53, region: 'global' },
+            { id: 'sitebulb', name: 'Sitebulb', category: 'Niche', url: 'https://sitebulb.com/user/{username}', popularity: 52, region: 'global' },
+            { id: 'seoclarity', name: 'SEOClarity', category: 'Niche', url: 'https://seoclarity.net/user/{username}', popularity: 51, region: 'global' },
+            { id: 'seomonitor', name: 'SEOmator', category: 'Niche', url: 'https://seomonitor.com/user/{username}', popularity: 52, region: 'global' },
+            { id: 'seobility', name: 'Seobility', category: 'Niche', url: 'https://seobility.net/user/{username}', popularity: 53, region: 'global' },
+            { id: 'wincher', name: 'Wincher', category: 'Niche', url: 'https://wincher.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'accuracer', name: 'AccuRanker', category: 'Niche', url: 'https://accuranker.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'nightwatch', name: 'Nightwatch', category: 'Niche', url: 'https://nightwatch.io/user/{username}', popularity: 56, region: 'global' },
+            { id: 'seoprofiler', name: 'SEOprofiler', category: 'Niche', url: 'https://seoprofiler.com/user/{username}', popularity: 57, region: 'global' },
+            { id: 'kwfinder', name: 'KWFinder', category: 'Niche', url: 'https://kwfinder.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'keywordtool', name: 'Keyword Tool', category: 'Niche', url: 'https://keywordtool.io/user/{username}', popularity: 59, region: 'global' },
+            { id: 'keywordeverywhere', name: 'Keyword Everywhere', category: 'Niche', url: 'https://keywordseverywhere.com/user/{username}', popularity: 60, region: 'global' },
+            { id: 'answerthepublic', name: 'AnswerThePublic', category: 'Niche', url: 'https://answerthepublic.com/user/{username}', popularity: 61, region: 'global' },
+            { id: 'alsoasked', name: 'AlsoAsked', category: 'Niche', url: 'https://alsoasked.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'peoplealsoask', name: 'People Also Ask', category: 'Niche', url: 'https://peoplealsoask.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'questiondb', name: 'QuestionDB', category: 'Niche', url: 'https://questiondb.io/user/{username}', popularity: 53, region: 'global' },
+            { id: 'explodingtopics', name: 'Exploding Topics', category: 'Niche', url: 'https://explodingtopics.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'googlealerts', name: 'Google Alerts', category: 'Niche', url: 'https://google.com/alerts/{username}', popularity: 68, region: 'global' },
+            { id: 'talkwalker', name: 'Talkwalker', category: 'Niche', url: 'https://talkwalker.com/user/{username}', popularity: 59, region: 'global' },
+            { id: 'brandwatch', name: 'Brandwatch', category: 'Niche', url: 'https://brandwatch.com/user/{username}', popularity: 63, region: 'global' },
+            { id: 'mention', name: 'Mention', category: 'Niche', url: 'https://mention.com/user/{username}', popularity: 61, region: 'global' },
+            { id: 'awario', name: 'Awario', category: 'Niche', url: 'https://awario.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'socialsearcher', name: 'Social Searcher', category: 'Niche', url: 'https://social-searcher.com/user/{username}', popularity: 57, region: 'global' },
+            { id: 'huntsuite', name: 'Hunt Suite', category: 'Niche', url: 'https://hunt.suite/user/{username}', popularity: 56, region: 'global' },
+            { id: 'f5bot', name: 'F5Bot', category: 'Niche', url: 'https://f5bot.com/user/{username}', popularity: 55, region: 'global' },
+            { id: 'ifttt', name: 'IFTTT', category: 'Niche', url: 'https://ifttt.com/{username}', popularity: 67, region: 'global' },
+            { id: 'zapier', name: 'Zapier', category: 'Niche', url: 'https://zapier.com/apps/user/{username}', popularity: 69, region: 'global' },
+            { id: 'integromat', name: 'Integromat', category: 'Niche', url: 'https://integromat.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'automateio', name: 'Automate.io', category: 'Niche', url: 'https://automate.io/user/{username}', popularity: 57, region: 'global' },
+            { id: 'pipedream', name: 'Pipedream', category: 'Niche', url: 'https://pipedream.com/user/{username}', popularity: 59, region: 'global' },
+            { id: 'n8n', name: 'n8n', category: 'Niche', url: 'https://n8n.io/user/{username}', popularity: 56, region: 'global' },
+            { id: 'make', name: 'Make', category: 'Niche', url: 'https://make.com/user/{username}', popularity: 60, region: 'global' },
+            { id: 'workato', name: 'Workato', category: 'Niche', url: 'https://workato.com/user/{username}', popularity: 58, region: 'global' },
+            { id: 'trayio', name: 'Tray.io', category: 'Niche', url: 'https://tray.io/user/{username}', popularity: 57, region: 'global' },
+            { id: 'cloudhq', name: 'CloudHQ', category: 'Niche', url: 'https://cloudhq.net/user/{username}', popularity: 56, region: 'global' },
+            { id: 'elasticio', name: 'elastic.io', category: 'Niche', url: 'https://elastic.io/user/{username}', popularity: 55, region: 'global' },
+            { id: 'piesync', name: 'PieSync', category: 'Niche', url: 'https://piesync.com/user/{username}', popularity: 54, region: 'global' },
+            { id: 'syncapps', name: 'SyncApps', category: 'Niche', url: 'https://syncapps.com/user/{username}', popularity: 53, region: 'global' },
+            { id: 'celigo', name: 'Celigo', category: 'Niche', url: 'https://celigo.com/user/{username}', popularity: 52, region: 'global' },
+            { id: 'jitterbit', name: 'Jitterbit', category: 'Niche', url: 'https://jitterbit.com/user/{username}', popularity: 51, region: 'global' },
+            { id: 'mulesoft', name: 'MuleSoft', category: 'Niche', url: 'https://mulesoft.com/user/{username}', popularity: 62, region: 'global' },
+            { id: 'boomi', name: 'Boomi', category: 'Niche', url: 'https://boomi.com/user/{username}', popularity: 61, region: 'global' },
+            { id: 'informatica', name: 'Informatica', category: 'Niche', url: 'https://informatica.com/user/{username}', popularity: 60, region: 'global' }
+        ];
+
+        // Theme Configuration
+        const THEMES = [
+            { id: 'default', name: 'Google', preview: '#4285f4,#34a853,#ea4335,#fbbc05,#ffffff,#202124' },
+            { id: 'dark', name: 'Dark Mode', preview: '#8ab4f8,#81c995,#f28b82,#fdd663,#202124,#e8eaed' },
+            { id: 'ocean', name: 'Material Ocean', preview: '#80cbc4,#82b1ff,#ff5252,#ffd740,#263238,#eceff1' },
+            { id: 'sunset', name: 'Sunset', preview: '#ff7043,#ffab40,#7e57c2,#ffca28,#fff8e1,#5d4037' },
+            { id: 'forest', name: 'Forest', preview: '#4caf50,#8bc34a,#ff9800,#ffeb3b,#e8f5e9,#1b5e20' },
+            { id: 'midnight', name: 'Midnight Purple', preview: '#bb86fc,#03dac6,#cf6679,#ffb74d,#121212,#e1e1e1' },
+            { id: 'minimal', name: 'Minimal White', preview: '#5f6368,#80868b,#d93025,#f29900,#ffffff,#3c4043' },
+            { id: 'cyber', name: 'Cyberpunk', preview: '#00ff9d,#00b8ff,#ff0055,#ffaa00,#0a0a0a,#ffffff' }
+        ];
+
+        // DOM Elements
+        const elements = {
+            // Inputs
+            usernameInput: document.getElementById('usernameInput'),
+            platformSearch: document.getElementById('platformSearch'),
+
+            // Buttons
+            searchBtn: document.getElementById('searchBtn'),
+            selectPlatformsBtn: document.getElementById('selectPlatformsBtn'),
+            loadExampleBtn: document.getElementById('loadExampleBtn'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            settingsBtn: document.getElementById('settingsBtn'),
+            exportBtn: document.getElementById('exportBtn'),
+            quickSearchBtn: document.getElementById('quickSearchBtn'),
+            compareBtn: document.getElementById('compareBtn'),
+            selectAllBtn: document.getElementById('selectAllBtn'),
+            selectTop50Btn: document.getElementById('selectTop50Btn'),
+            selectByCategoryBtn: document.getElementById('selectByCategoryBtn'),
+            deselectAllBtn: document.getElementById('deselectAllBtn'),
+            saveSelectionBtn: document.getElementById('saveSelectionBtn'),
+            openAllFoundBtn: document.getElementById('openAllFoundBtn'),
+            copyAllLinksBtn: document.getElementById('copyAllLinksBtn'),
+            newSearchBtn: document.getElementById('newSearchBtn'),
+            backupDataBtn: document.getElementById('backupDataBtn'),
+            restoreDataBtn: document.getElementById('restoreDataBtn'),
+            resetDataBtn: document.getElementById('resetDataBtn'),
+            showGuideBtn: document.getElementById('showGuideBtn'),
+
+            // Sections
+            platformSection: document.getElementById('platformSection'),
+            resultsSection: document.getElementById('resultsSection'),
+            searchProgress: document.getElementById('searchProgress'),
+
+            // Containers
+            platformGrid: document.getElementById('platformGrid'),
+            categoryTabs: document.getElementById('categoryTabs'),
+            resultsGrid: document.getElementById('resultsGrid'),
+            resultsTabs: document.getElementById('resultsTabs'),
+            themeGrid: document.getElementById('themeGrid'),
+
+            // Stats
+            searchedUsername: document.getElementById('searchedUsername'),
+            searchedCount: document.getElementById('searchedCount'),
+            foundCount: document.getElementById('foundCount'),
+            notFoundCount: document.getElementById('notFoundCount'),
+            presenceScore: document.getElementById('presenceScore'),
+            platformDiversity: document.getElementById('platformDiversity'),
+            searchTime: document.getElementById('searchTime'),
+            consistencyScore: document.getElementById('consistencyScore'),
+            platformCount: document.getElementById('platformCount'),
+            progressBar: document.getElementById('progressBar'),
+
+            // Modals & Panels
+            settingsPanel: document.getElementById('settingsPanel'),
+            closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+            exportModal: document.getElementById('exportModal'),
+            compareModal: document.getElementById('compareModal'),
+            guideModal: document.getElementById('guideModal'),
+            closeExportModalBtn: document.getElementById('closeExportModalBtn'),
+            closeCompareModalBtn: document.getElementById('closeCompareModalBtn'),
+            closeGuideModalBtn: document.getElementById('closeGuideModalBtn'),
+            exportJsonBtn: document.getElementById('exportJsonBtn'),
+            exportCsvBtn: document.getElementById('exportCsvBtn'),
+            exportHtmlBtn: document.getElementById('exportHtmlBtn'),
+            startCompareBtn: document.getElementById('startCompareBtn'),
+            exportData: document.getElementById('exportData'),
+
+            // Settings Toggles
+            darkModeToggle: document.getElementById('darkModeToggle'),
+            autoSearchToggle: document.getElementById('autoSearchToggle'),
+            showIconsToggle: document.getElementById('showIconsToggle'),
+            privacyModeToggle: document.getElementById('privacyModeToggle'),
+
+            // Compare Inputs
+            compareUsername1: document.getElementById('compareUsername1'),
+            compareUsername2: document.getElementById('compareUsername2'),
+
+            // Legal Modal
+            legalModal: document.getElementById('legalModal'),
+            acceptLegalBtn: document.getElementById('acceptLegalBtn')
+        };
+
+        // Initialize Application
+        function initApp() {
+            loadSettings();
+            initializePlatforms();
+            initializeThemes();
+            setupEventListeners();
+            updatePlatformCount();
+            checkLegalConsent();
+        }
+
+        // Check Legal Consent
+        function checkLegalConsent() {
+            const accepted = localStorage.getItem('profileScan_legalAccepted');
+            if (accepted !== 'true') {
+                elements.legalModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            }
+        }
+
+        // Accept Legal Terms
+        function acceptLegal() {
+            localStorage.setItem('profileScan_legalAccepted', 'true');
+            elements.legalModal.classList.add('hidden');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('profileScanSettings');
+            if (savedSettings) {
+                AppState.settings = JSON.parse(savedSettings);
+            }
+
+            const savedSelection = localStorage.getItem('selectedPlatforms');
+            if (savedSelection) {
+                AppState.selectedPlatforms = new Set(JSON.parse(savedSelection));
+            }
+
+            const savedTheme = localStorage.getItem('selectedTheme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+
+            // Update toggles
+            elements.darkModeToggle.checked = AppState.settings.darkMode;
+            elements.autoSearchToggle.checked = AppState.settings.autoSearch;
+            elements.showIconsToggle.checked = AppState.settings.showIcons;
+            elements.privacyModeToggle.checked = AppState.settings.privacyMode;
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem('profileScanSettings', JSON.stringify(AppState.settings));
+            localStorage.setItem('selectedPlatforms', JSON.stringify([...AppState.selectedPlatforms]));
+        }
+
+        // Initialize platform data
+        function initializePlatforms() {
+            AppState.platformData = PLATFORM_DATABASE;
+
+            // Extract categories
+            AppState.categories = new Set(AppState.platformData.map(p => p.category));
+            AppState.categories.add('All');
+
+            renderCategoryTabs();
+            renderPlatformGrid();
+
+            // Select default platforms if none selected
+            if (AppState.selectedPlatforms.size === 0) {
+                AppState.settings.defaultPlatforms.forEach(id => {
+                    AppState.selectedPlatforms.add(id);
+                });
+                saveSettings();
+            }
+        }
+
+        // Initialize theme selector
+        function initializeThemes() {
+            elements.themeGrid.innerHTML = '';
+            THEMES.forEach(theme => {
+                const colors = theme.preview.split(',');
+                const themeOption = document.createElement('div');
+                themeOption.className = `theme-option ${theme.id === AppState.currentTheme ? 'active' : ''}`;
+                themeOption.dataset.theme = theme.id;
+                themeOption.innerHTML = `
+                    <div class="theme-preview" style="background: linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%);"></div>
+                    <div class="theme-name">${theme.name}</div>
+                `;
+                themeOption.addEventListener('click', () => setTheme(theme.id));
+                elements.themeGrid.appendChild(themeOption);
+            });
+        }
+
+        // Set theme
+        function setTheme(themeId) {
+            document.body.className = `theme-${themeId}`;
+            AppState.currentTheme = themeId;
+            localStorage.setItem('selectedTheme', themeId);
+
+            // Update active theme in grid
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.theme === themeId);
+            });
+        }
+
+        // Render category tabs
+        function renderCategoryTabs() {
+            elements.categoryTabs.innerHTML = '';
+            Array.from(AppState.categories).sort().forEach(category => {
+                const tab = document.createElement('div');
+                tab.className = `category-tab ${category === 'All' ? 'active' : ''}`;
+                tab.textContent = category;
+                tab.dataset.category = category;
+                tab.addEventListener('click', () => filterPlatformsByCategory(category));
+                elements.categoryTabs.appendChild(tab);
+            });
+        }
+
+        // Render platform grid
+        function renderPlatformGrid(filter = '', category = 'All') {
+            elements.platformGrid.innerHTML = '';
+
+            let filteredPlatforms = AppState.platformData;
+
+            // Apply category filter
+            if (category !== 'All') {
+                filteredPlatforms = filteredPlatforms.filter(p => p.category === category);
+            }
+
+            // Apply search filter
+            if (filter) {
+                const searchTerm = filter.toLowerCase();
+                filteredPlatforms = filteredPlatforms.filter(p =>
+                    p.name.toLowerCase().includes(searchTerm) ||
+                    p.category.toLowerCase().includes(searchTerm) ||
+                    p.id.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Sort by popularity
+            filteredPlatforms.sort((a, b) => b.popularity - a.popularity);
+
+            // Render platforms
+            filteredPlatforms.forEach(platform => {
+                const card = createPlatformCard(platform);
+                elements.platformGrid.appendChild(card);
+            });
+        }
+
+        // Create platform card
+        function createPlatformCard(platform) {
+            const card = document.createElement('div');
+            card.className = `platform-card ${AppState.selectedPlatforms.has(platform.id) ? 'selected' : ''}`;
+            card.innerHTML = `
+                <div class="platform-checkbox ${AppState.selectedPlatforms.has(platform.id) ? 'checked' : ''}" 
+                     data-platform="${platform.id}"></div>
+                <div class="platform-icon">${platform.name.charAt(0)}</div>
+                <h3 class="platform-name">${platform.name}</h3>
+                <span class="platform-category">${platform.category}</span>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                    Popularity: ${platform.popularity}/100
+                </p>
+            `;
+
+            // Add click handlers
+            const checkbox = card.querySelector('.platform-checkbox');
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePlatformSelection(platform.id);
+            });
+
+            card.addEventListener('click', (e) => {
+                if (e.target !== checkbox) {
+                    togglePlatformSelection(platform.id);
+                }
+            });
+
+            return card;
+        }
+
+        // Toggle platform selection
+        function togglePlatformSelection(platformId) {
+            if (AppState.selectedPlatforms.has(platformId)) {
+                AppState.selectedPlatforms.delete(platformId);
+            } else {
+                AppState.selectedPlatforms.add(platformId);
+            }
+
+            saveSettings();
+            updatePlatformCount();
+            renderPlatformGrid(elements.platformSearch.value, getActiveCategory());
+        }
+
+        // Get active category
+        function getActiveCategory() {
+            const activeTab = elements.categoryTabs.querySelector('.category-tab.active');
+            return activeTab ? activeTab.dataset.category : 'All';
+        }
+
+        // Filter platforms by category
+        function filterPlatformsByCategory(category) {
+            // Update active tab
+            elements.categoryTabs.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+
+            renderPlatformGrid(elements.platformSearch.value, category);
+        }
+
+        // Update platform count display
+        function updatePlatformCount() {
+            const count = AppState.selectedPlatforms.size;
+            elements.platformCount.textContent = count;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search button
+            elements.searchBtn.addEventListener('click', performSearch);
+
+            // Platform selection button
+            elements.selectPlatformsBtn.addEventListener('click', () => {
+                elements.platformSection.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Load example
+            elements.loadExampleBtn.addEventListener('click', loadExample);
+
+            // Clear all
+            elements.clearAllBtn.addEventListener('click', clearAll);
+
+            // Settings
+            elements.settingsBtn.addEventListener('click', () => {
+                elements.settingsPanel.classList.add('active');
+            });
+
+            elements.closeSettingsBtn.addEventListener('click', () => {
+                elements.settingsPanel.classList.remove('active');
+            });
+
+            // Export
+            elements.exportBtn.addEventListener('click', showExportModal);
+            elements.closeExportModalBtn.addEventListener('click', () => {
+                elements.exportModal.classList.remove('active');
+            });
+
+            elements.exportJsonBtn.addEventListener('click', () => exportResults('json'));
+            elements.exportCsvBtn.addEventListener('click', () => exportResults('csv'));
+            elements.exportHtmlBtn.addEventListener('click', () => exportResults('html'));
+
+            // Compare
+            elements.compareBtn.addEventListener('click', () => {
+                elements.compareModal.classList.add('active');
+            });
+
+            elements.closeCompareModalBtn.addEventListener('click', () => {
+                elements.compareModal.classList.remove('active');
+            });
+
+            elements.startCompareBtn.addEventListener('click', performCompare);
+
+            // Quick actions
+            elements.selectAllBtn.addEventListener('click', selectAllPlatforms);
+            elements.selectTop50Btn.addEventListener('click', selectTopPlatforms);
+            elements.deselectAllBtn.addEventListener('click', deselectAllPlatforms);
+            elements.saveSelectionBtn.addEventListener('click', saveCurrentSelection);
+
+            // Results actions
+            elements.openAllFoundBtn.addEventListener('click', openAllFoundProfiles);
+            elements.copyAllLinksBtn.addEventListener('click', copyAllLinks);
+            elements.newSearchBtn.addEventListener('click', () => {
+                elements.resultsSection.style.display = 'none';
+                elements.platformSection.style.display = 'block';
+                elements.usernameInput.value = '';
+                elements.usernameInput.focus();
+            });
+
+            // Platform search
+            elements.platformSearch.addEventListener('input', (e) => {
+                renderPlatformGrid(e.target.value, getActiveCategory());
+            });
+
+            // Username input
+            elements.usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && AppState.settings.autoSearch) {
+                    performSearch();
+                }
+            });
+
+            // Settings toggles
+            elements.darkModeToggle.addEventListener('change', (e) => {
+                AppState.settings.darkMode = e.target.checked;
+                saveSettings();
+            });
+
+            elements.autoSearchToggle.addEventListener('change', (e) => {
+                AppState.settings.autoSearch = e.target.checked;
+                saveSettings();
+            });
+
+            elements.showIconsToggle.addEventListener('change', (e) => {
+                AppState.settings.showIcons = e.target.checked;
+                saveSettings();
+            });
+
+            elements.privacyModeToggle.addEventListener('change', (e) => {
+                AppState.settings.privacyMode = e.target.checked;
+                saveSettings();
+            });
+
+            // Backup/Restore
+            elements.backupDataBtn.addEventListener('click', backupData);
+            elements.restoreDataBtn.addEventListener('click', restoreData);
+            elements.resetDataBtn.addEventListener('click', resetData);
+
+            // Guide
+            elements.showGuideBtn.addEventListener('click', () => {
+                elements.guideModal.classList.add('active');
+            });
+
+            elements.closeGuideModalBtn.addEventListener('click', () => {
+                elements.guideModal.classList.remove('active');
+            });
+
+            // Quick search
+            elements.quickSearchBtn.addEventListener('click', () => {
+                elements.usernameInput.value = 'john_doe';
+                performSearch();
+            });
+
+            // Legal Accept
+            if (elements.acceptLegalBtn) {
+                elements.acceptLegalBtn.addEventListener('click', acceptLegal);
+            }
+        }
+
+        // Perform search
+        async function performSearch() {
+            const username = elements.usernameInput.value.trim();
+            if (!username) {
+                alert('Please enter a username to search');
+                return;
+            }
+
+            if (AppState.selectedPlatforms.size === 0) {
+                alert('Please select at least one platform to search');
+                return;
+            }
+
+            AppState.username = username;
+            elements.searchedUsername.textContent = username;
+
+            // Show progress
+            elements.searchProgress.classList.remove('hidden');
+            elements.resultsSection.style.display = 'block';
+            elements.platformSection.style.display = 'none';
+
+            // Reset progress bar
+            elements.progressBar.style.width = '0%';
+
+            // Get selected platforms
+            const selectedPlatforms = AppState.platformData.filter(p =>
+                AppState.selectedPlatforms.has(p.id)
+            );
+
+            elements.searchedCount.textContent = selectedPlatforms.length;
+
+            // Start search
+            const startTime = Date.now();
+            AppState.searchResults = [];
+
+            for (let i = 0; i < selectedPlatforms.length; i++) {
+                const platform = selectedPlatforms[i];
+                const result = await checkPlatform(platform, username);
+                AppState.searchResults.push(result);
+
+                // Update progress
+                const progress = ((i + 1) / selectedPlatforms.length) * 100;
+                elements.progressBar.style.width = `${progress}%`;
+
+                // Update counts in real-time
+                const found = AppState.searchResults.filter(r => r.exists).length;
+                const notFound = AppState.searchResults.filter(r => !r.exists).length;
+                elements.foundCount.textContent = found;
+                elements.notFoundCount.textContent = notFound;
+
+                // Render results progressively
+                if (i % 5 === 0 || i === selectedPlatforms.length - 1) {
+                    renderResults();
+                }
+            }
+
+            // Hide progress bar
+            elements.searchProgress.classList.add('hidden');
+
+            // Calculate statistics
+            const endTime = Date.now();
+            const searchTime = (endTime - startTime) / 1000;
+            elements.searchTime.textContent = `${searchTime.toFixed(1)}s`;
+
+            calculateStatistics();
+        }
+
+        // Check a single platform
+        async function checkPlatform(platform, username) {
+            const url = platform.url.replace('{username}', encodeURIComponent(username));
+
+            try {
+                // Call local backend to bypass CORS
+                const response = await fetch(`http://localhost:3000/check?url=${encodeURIComponent(url)}&platform=${platform.id}`);
+                const data = await response.json();
+
+                return {
+                    platform: platform.name,
+                    platformId: platform.id,
+                    category: platform.category,
+                    url: url,
+                    exists: data.exists,
+                    checked: true,
+                    error: data.error
+                };
+            } catch (error) {
+                console.error('Error checking platform:', error);
+                // Fallback or error state
+                return {
+                    platform: platform.name,
+                    platformId: platform.id,
+                    category: platform.category,
+                    url: url,
+                    exists: false,
+                    checked: true,
+                    error: 'Connection Failed'
+                };
+            }
+        }
+
+        // Render results
+        function renderResults() {
+            elements.resultsGrid.innerHTML = '';
+
+            // Group by category
+            const resultsByCategory = {};
+            AppState.searchResults.forEach(result => {
+                if (!resultsByCategory[result.category]) {
+                    resultsByCategory[result.category] = [];
+                }
+                resultsByCategory[result.category].push(result);
+            });
+
+            // Update results tabs
+            renderResultsTabs(Object.keys(resultsByCategory));
+
+            // Get active tab
+            const activeTab = elements.resultsTabs.querySelector('.results-tab.active');
+            const activeCategory = activeTab ? activeTab.dataset.category : 'All';
+
+            // Filter results
+            let resultsToShow = AppState.searchResults;
+            if (activeCategory !== 'All') {
+                resultsToShow = resultsToShow.filter(r => r.category === activeCategory);
+            }
+
+            // Render results
+            resultsToShow.forEach(result => {
+                const card = createResultCard(result);
+                elements.resultsGrid.appendChild(card);
+            });
+        }
+
+        // Create result card
+        function createResultCard(result) {
+            const card = document.createElement('div');
+            card.className = `result-card ${result.exists ? 'found' : 'not-found'}`;
+            card.innerHTML = `
+                <div class="result-status ${result.exists ? 'status-found' : 'status-not-found'}">
+                    ${result.exists ? 'Found' : 'Not Found'}
+                </div>
+                <div class="result-platform">
+                    <div class="result-platform-icon">${result.platform.charAt(0)}</div>
+                    <div>
+                        <h3 style="color: var(--text-primary); margin-bottom: 4px;">${result.platform}</h3>
+                        <span class="platform-category">${result.category}</span>
+                    </div>
+                </div>
+                <a href="${result.url}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="result-url">
+                    ${result.url}
+                </a>
+                <div class="result-actions">
+                    <button class="btn btn-secondary" onclick="window.open('${result.url}', '_blank')">
+                        <span>🔗</span> Visit Profile
+                    </button>
+                    <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${result.url}')">
+                        <span>📋</span> Copy Link
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // Render results tabs
+        function renderResultsTabs(categories) {
+            elements.resultsTabs.innerHTML = '';
+
+            // Add "All" tab
+            const allTab = document.createElement('div');
+            allTab.className = 'results-tab active';
+            allTab.textContent = 'All Results';
+            allTab.dataset.category = 'All';
+            allTab.addEventListener('click', () => filterResults('All'));
+            elements.resultsTabs.appendChild(allTab);
+
+            // Add category tabs
+            categories.forEach(category => {
+                const count = AppState.searchResults.filter(r => r.category === category).length;
+                const foundCount = AppState.searchResults.filter(r => r.category === category && r.exists).length;
+
+                const tab = document.createElement('div');
+                tab.className = 'results-tab';
+                tab.textContent = `${category} (${foundCount}/${count})`;
+                tab.dataset.category = category;
+                tab.addEventListener('click', () => filterResults(category));
+                elements.resultsTabs.appendChild(tab);
+            });
+        }
+
+        // Filter results by category
+        function filterResults(category) {
+            // Update active tab
+            elements.resultsTabs.querySelectorAll('.results-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+
+            renderResults();
+        }
+
+        // Calculate statistics
+        function calculateStatistics() {
+            const found = AppState.searchResults.filter(r => r.exists).length;
+            const total = AppState.searchResults.length;
+
+            // Presence score
+            const presenceScore = total > 0 ? Math.round((found / total) * 100) : 0;
+            elements.presenceScore.textContent = `${presenceScore}%`;
+
+            // Platform diversity
+            const categories = new Set(AppState.searchResults.filter(r => r.exists).map(r => r.category));
+            let diversity = 'Low';
+            if (categories.size > 5) diversity = 'High';
+            else if (categories.size > 2) diversity = 'Medium';
+            elements.platformDiversity.textContent = diversity;
+
+            // Consistency score (simulated)
+            const consistencyScore = Math.min(100, Math.round(presenceScore * 1.2));
+            elements.consistencyScore.textContent = `${consistencyScore}%`;
+        }
+
+        // Select all platforms
+        function selectAllPlatforms() {
+            AppState.platformData.forEach(p => AppState.selectedPlatforms.add(p.id));
+            saveSettings();
+            updatePlatformCount();
+            renderPlatformGrid(elements.platformSearch.value, getActiveCategory());
+        }
+
+        // Select top platforms
+        function selectTopPlatforms() {
+            AppState.selectedPlatforms.clear();
+            const topPlatforms = AppState.platformData
+                .sort((a, b) => b.popularity - a.popularity)
+                .slice(0, 50)
+                .map(p => p.id);
+            topPlatforms.forEach(id => AppState.selectedPlatforms.add(id));
+            saveSettings();
+            updatePlatformCount();
+            renderPlatformGrid(elements.platformSearch.value, getActiveCategory());
+        }
+
+        // Deselect all platforms
+        function deselectAllPlatforms() {
+            AppState.selectedPlatforms.clear();
+            saveSettings();
+            updatePlatformCount();
+            renderPlatformGrid(elements.platformSearch.value, getActiveCategory());
+        }
+
+        // Save current selection as default
+        function saveCurrentSelection() {
+            AppState.settings.defaultPlatforms = [...AppState.selectedPlatforms];
+            saveSettings();
+            alert('Platform selection saved as default!');
+        }
+
+        // Open all found profiles
+        function openAllFoundProfiles() {
+            const foundUrls = AppState.searchResults
+                .filter(r => r.exists)
+                .map(r => r.url);
+
+            if (foundUrls.length === 0) {
+                alert('No profiles found to open');
+                return;
+            }
+
+            if (confirm(`Open ${foundUrls.length} profiles in new tabs?`)) {
+                foundUrls.forEach(url => {
+                    window.open(url, '_blank');
+                });
+            }
+        }
+
+        // Copy all links
+        function copyAllLinks() {
+            const allUrls = AppState.searchResults.map(r => r.url);
+            const text = allUrls.join('\n');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('All profile links copied to clipboard!');
+            });
+        }
+
+        // Export results
+        function exportResults(format) {
+            const data = {
+                username: AppState.username,
+                timestamp: new Date().toISOString(),
+                results: AppState.searchResults,
+                statistics: {
+                    total: AppState.searchResults.length,
+                    found: AppState.searchResults.filter(r => r.exists).length,
+                    notFound: AppState.searchResults.filter(r => !r.exists).length
+                }
+            };
+
+            let exportText = '';
+            switch (format) {
+                case 'json':
+                    exportText = JSON.stringify(data, null, 2);
+                    break;
+                case 'csv':
+                    exportText = 'Platform,Category,URL,Status\n';
+                    data.results.forEach(r => {
+                        exportText += `"${r.platform}","${r.category}","${r.url}","${r.exists ? 'Found' : 'Not Found'}"\n`;
+                    });
+                    break;
+                case 'html':
+                    exportText = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>ProfileScan Report - ${data.username}</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                table { border-collapse: collapse; width: 100%; }
+                                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                                th { background-color: #f4f4f4; }
+                                .found { background-color: #d4edda; }
+                                .not-found { background-color: #f8d7da; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>ProfileScan Report</h1>
+                            <p><strong>Username:</strong> ${data.username}</p>
+                            <p><strong>Date:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                            <p><strong>Total Platforms:</strong> ${data.statistics.total}</p>
+                            <p><strong>Found:</strong> ${data.statistics.found}</p>
+                            <p><strong>Not Found:</strong> ${data.statistics.notFound}</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Platform</th>
+                                        <th>Category</th>
+                                        <th>URL</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.results.map(r => `
+                                        <tr class="${r.exists ? 'found' : 'not-found'}">
+                                            <td>${r.platform}</td>
+                                            <td>${r.category}</td>
+                                            <td><a href="${r.url}" target="_blank">${r.url}</a></td>
+                                            <td>${r.exists ? 'Found' : 'Not Found'}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </body>
+                        </html>
+                    `;
+                    break;
+            }
+
+            elements.exportData.value = exportText;
+
+            // Download file
+            const blob = new Blob([exportText], {
+                type: format === 'json' ? 'application/json' :
+                    format === 'csv' ? 'text/csv' : 'text/html'
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `profilescan-${AppState.username}-${new Date().toISOString().split('T')[0]}.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Perform compare
+        function performCompare() {
+            const username1 = elements.compareUsername1.value.trim();
+            const username2 = elements.compareUsername2.value.trim();
+
+            if (!username1 || !username2) {
+                alert('Please enter both usernames to compare');
+                return;
+            }
+
+            // For demo, just show an alert
+            alert(`Comparison between "${username1}" and "${username2}" would be shown here.\n\nIn a full implementation, this would compare profiles side by side.`);
+            elements.compareModal.classList.remove('active');
+        }
+
+        // Backup data
+        function backupData() {
+            const data = {
+                settings: AppState.settings,
+                selectedPlatforms: [...AppState.selectedPlatforms],
+                theme: AppState.currentTheme,
+                timestamp: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `profilescan-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('Data backed up successfully!');
+        }
+
+        // Restore data
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+
+                        if (data.settings) AppState.settings = data.settings;
+                        if (data.selectedPlatforms) AppState.selectedPlatforms = new Set(data.selectedPlatforms);
+                        if (data.theme) setTheme(data.theme);
+
+                        // Update UI
+                        elements.darkModeToggle.checked = AppState.settings.darkMode;
+                        elements.autoSearchToggle.checked = AppState.settings.autoSearch;
+                        elements.showIconsToggle.checked = AppState.settings.showIcons;
+                        elements.privacyModeToggle.checked = AppState.settings.privacyMode;
+
+                        updatePlatformCount();
+                        renderPlatformGrid(elements.platformSearch.value, getActiveCategory());
+                        saveSettings();
+
+                        alert('Data restored successfully!');
+                    } catch (error) {
+                        alert('Error restoring data: Invalid backup file');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Reset data
+        function resetData() {
+            if (confirm('Are you sure you want to reset all data? This will clear all settings and selections.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // Load example
+        function loadExample() {
+            elements.usernameInput.value = 'john_doe';
+            performSearch();
+        }
+
+        // Clear all
+        function clearAll() {
+            if (confirm('Clear all inputs and results?')) {
+                elements.usernameInput.value = '';
+                AppState.searchResults = [];
+                elements.resultsSection.style.display = 'none';
+                elements.platformSection.style.display = 'block';
+                elements.searchProgress.classList.add('hidden');
+            }
+        }
+
+        // Show export modal
+        function showExportModal() {
+            elements.exportModal.classList.add('active');
+            elements.exportData.value = 'Select an export format to generate data...';
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+    <!-- Legal Consent Modal -->
+    <div class="legal-modal hidden" id="legalModal">
+        <div class="legal-content">
+            <div class="legal-icon">⚖️</div>
+            <h2 style="color: var(--text-primary); margin-bottom: 8px;">Legal Notice & Consent</h2>
+            <p style="color: var(--text-secondary);">Please review and accept the terms to use ProfileScan.</p>
+
+            <div class="legal-text">
+                <p><strong>1. Personal Use Only:</strong> This tool is strictly for personal, non-commercial use.
+                    Commercial use, background checks, and recruiting are prohibited.</p>
+                <p style="margin-top: 8px;"><strong>2. Accuracy Disclaimer:</strong> Results are automated and may not
+                    be accurate. Always verify manually.</p>
+                <p style="margin-top: 8px;"><strong>3. Privacy:</strong> We operate on a local-first basis. No personal
+                    data is sent to our servers.</p>
+                <p style="margin-top: 8px;"><strong>4. Liability:</strong> The authors are not responsible for how you
+                    use this tool.</p>
+                <p style="margin-top: 16px; font-weight: 500;">By continuing, you acknowledge that you have read and
+                    agree to the <a href="PRIVACY_POLICY.md" target="_blank"
+                        style="color: var(--primary-color);">Privacy Policy & Legal Notice</a>.</p>
+            </div>
+
+            <button class="btn btn-primary" id="acceptLegalBtn" style="width: 100%; padding: 16px; font-size: 16px;">
+                I Accept & Continue
+            </button>
+            <p style="margin-top: 12px; font-size: 12px; color: var(--text-secondary);">
+                You must accept to use this application.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

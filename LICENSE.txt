@@ -1,0 +1,35 @@
+ProfileScan License
+Copyright (c) 2026 Riyajul Ali
+
+==============================================================================
+PERSONAL USE ONLY LICENSE
+==============================================================================
+
+This software is provided for PERSONAL USE ONLY. 
+
+1. Permitted Uses:
+   - You may install and use this software on your personal devices for your own 
+     personal, non-commercial purposes (e.g., finding your own social media 
+     profiles, personal digital footprint audit).
+   - You may modify the source code for your own personal learning or 
+     experimentation, provided such modifications are not distributed.
+
+2. Prohibited Uses:
+   - COMMERCIAL USE IS STRICTLY PROHIBITED. You may not use this software, 
+     in whole or in part, for any commercial purpose, including but not limited 
+     to:
+     - Selling the software or any service based on the software.
+     - Using the software to perform background checks, investigative work, 
+       recruiting, or marketing analysis for a business or organization.
+     - Including this software or its code in any commercial product.
+   - You may not distribute, redistribute, sub-license, or sell copies of 
+     this software.
+
+3. No Warranty:
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
